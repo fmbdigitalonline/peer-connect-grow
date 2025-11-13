@@ -13,6 +13,7 @@ import Sessions from "./pages/Sessions";
 import SessionDetail from "./pages/SessionDetail";
 import Library from "./pages/Library";
 import CoachDashboard from "./pages/CoachDashboard";
+import RoleEnvironment from "./pages/RoleEnvironment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/session/:id" element={<SessionDetail />} />
           <Route path="/library" element={<Library />} />
           <Route path="/coach" element={<CoachDashboard />} />
+          <Route path="/environment/:roleId" element={<RoleEnvironment />} />
           <Route path="/community" element={<Community />} />
           <Route path="/portfolio" element={<Portfolio />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

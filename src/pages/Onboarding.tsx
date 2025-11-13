@@ -1,191 +1,188 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { UserCircle, Users, Sparkles, GraduationCap } from "lucide-react";
+import { cn } from "@/lib/utils";
 import peerLogo from "@/assets/peer-logo.png";
-
-type Role = "supportee" | "buddy" | "leader" | "coach" | null;
+import { roleList } from "@/lib/roleConfigs";
 
 const Onboarding = () => {
-  const [step, setStep] = useState(1);
-  const [role, setRole] = useState<Role>(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [step, setStep] = useState<1 | 2>(1);
+  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
 
-  const roles = [
-    {
-      id: "supportee" as Role,
-      title: "Supportee",
-      description: "Ik wil hulp vragen en leren",
-      icon: UserCircle,
-      color: "peer-teal",
-      gradient: "bg-gradient-fresh",
-    },
-    {
-      id: "buddy" as Role,
-      title: "Buddy",
-      description: "Ik wil anderen helpen",
-      icon: Users,
-      color: "peer-orange",
-      gradient: "bg-gradient-warm",
-    },
-    {
-      id: "leader" as Role,
-      title: "Peer Leader",
-      description: "Ik begeleid groepen",
-      icon: Sparkles,
-      color: "peer-magenta",
-      gradient: "bg-gradient-peer",
-    },
-    {
-      id: "coach" as Role,
-      title: "Docent-Coach",
-      description: "Ik ondersteun peer leaders",
-      icon: GraduationCap,
-      color: "peer-purple",
-      gradient: "bg-gradient-peer",
-    },
-  ];
+  useEffect(() => {
+    const presetRole = searchParams.get("role");
+    if (presetRole && roleList.some((role) => role.id === presetRole)) {
+      setSelectedRoleId(presetRole);
+      setStep(2);
+    }
+  }, [searchParams]);
 
-  const handleRoleSelect = (selectedRole: Role) => {
-    setRole(selectedRole);
+  const selectedRole = useMemo(
+    () => roleList.find((role) => role.id === selectedRoleId) || null,
+    [selectedRoleId],
+  );
+
+  const handleRoleSelect = (roleId: string) => {
+    setSelectedRoleId(roleId);
   };
 
-  const handleNext = () => {
-    if (step === 1 && role) {
+  const handleContinue = () => {
+    if (step === 1 && selectedRoleId) {
       setStep(2);
-    } else if (step === 2) {
-      localStorage.setItem("userRole", role || "");
+      return;
+    }
+
+    if (step === 2 && selectedRole) {
+      localStorage.setItem("userRole", selectedRole.id);
       localStorage.setItem("onboardingComplete", "true");
-      navigate("/home");
+      navigate(`/environment/${selectedRole.id}`);
     }
   };
 
-  const selectedRoleData = roles.find((r) => r.id === role);
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header with Logo */}
-      <div className="bg-white py-8 px-6 border-b border-border">
+      <div className="bg-white py-8 px-6 border-b border-border shadow-sm">
         <div className="flex justify-center mb-4">
-          <img src={peerLogo} alt="Peer2Peer Logo" className="h-20 w-auto" />
+          <img src={peerLogo} alt="Peer2Peer" className="h-20 w-auto" />
         </div>
-        <h1 className="text-4xl font-extrabold text-center mb-2 text-foreground">Peer2Peer</h1>
-        <p className="text-lg text-center text-muted-foreground">Leren van, met en door elkaar</p>
+        <h1 className="text-4xl font-extrabold text-center text-foreground">
+          Kies jouw rol en omgeving
+        </h1>
+        <p className="text-center text-muted-foreground max-w-3xl mx-auto mt-2">
+          Iedere rol heeft een eigen omgeving met configuraties, user flows en features.
+          Je start pas zodra je de juiste omgeving gekozen hebt – zo voorkomen we dat
+          iedereen in hetzelfde generieke systeem belandt.
+        </p>
       </div>
 
-      {/* Progress indicator */}
       <div className="flex justify-center gap-2 py-6">
-        <div
-          className={`h-2 w-8 rounded-full transition-all ${
-            step >= 1 ? "bg-primary" : "bg-muted"
-          }`}
-        />
-        <div
-          className={`h-2 w-8 rounded-full transition-all ${
-            step >= 2 ? "bg-primary" : "bg-muted"
-          }`}
-        />
+        {[1, 2].map((index) => (
+          <div
+            key={index}
+            className={cn(
+              "h-2 w-14 rounded-full transition-all",
+              step >= index ? "bg-primary" : "bg-muted",
+            )}
+          />
+        ))}
       </div>
 
-      {/* Content */}
-      <div className="flex-1 px-6 pb-8 animate-fade-in">
+      <div className="flex-1 px-4 pb-8 w-full max-w-6xl mx-auto">
         {step === 1 && (
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-center mb-2">Wie ben jij?</h2>
-            <p className="text-center text-muted-foreground mb-8">
-              Kies je rol om te starten
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {roles.map((roleOption) => {
-                const Icon = roleOption.icon;
-                const isSelected = role === roleOption.id;
-                return (
-                  <Card
-                    key={roleOption.id}
-                    className={`cursor-pointer transition-all hover:scale-105 ${
-                      isSelected ? "ring-4 ring-primary shadow-lg" : "hover:shadow-md"
-                    }`}
-                    onClick={() => handleRoleSelect(roleOption.id)}
-                  >
-                    <div className="p-6 text-center">
-                      <div
-                        className={`w-20 h-20 ${roleOption.gradient} rounded-full flex items-center justify-center mx-auto mb-4`}
-                      >
-                        <Icon className="w-10 h-10 text-white" />
-                      </div>
-                      <h3 className="text-xl font-bold mb-2">{roleOption.title}</h3>
-                      <p className="text-muted-foreground">{roleOption.description}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {roleList.map((role) => (
+              <Card
+                key={role.id}
+                onClick={() => handleRoleSelect(role.id)}
+                className={cn(
+                  "cursor-pointer border-2 transition-all",
+                  selectedRoleId === role.id
+                    ? "border-primary shadow-xl"
+                    : "border-transparent hover:border-border hover:shadow-lg",
+                )}
+              >
+                <div className="p-6 h-full flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", role.badge)}>
+                      <role.icon className="w-6 h-6 text-white" />
                     </div>
-                  </Card>
-                );
-              })}
-            </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">{role.subtitle}</p>
+                      <h3 className="text-xl font-semibold text-foreground">{role.title}</h3>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground flex-1">{role.description}</p>
+                  <div className="space-y-1">
+                    {role.focus.map((item) => (
+                      <p key={item} className="text-sm text-foreground flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-primary" />
+                        {item}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            ))}
           </div>
         )}
 
-        {step === 2 && selectedRoleData && (
-          <div className="max-w-md mx-auto text-center animate-slide-up">
-            <div
-              className={`w-24 h-24 ${selectedRoleData.gradient} rounded-full flex items-center justify-center mx-auto mb-6`}
-            >
-              <selectedRoleData.icon className="w-12 h-12 text-white" />
+        {step === 2 && selectedRole && (
+          <div className="animate-in slide-in-from-bottom-4 duration-500">
+            <div className="bg-muted/50 rounded-2xl p-8">
+              <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex-1 space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className={cn("w-16 h-16 rounded-3xl flex items-center justify-center", selectedRole.badge)}>
+                      <selectedRole.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">{selectedRole.subtitle}</p>
+                      <h2 className="text-3xl font-bold">{selectedRole.title} omgeving</h2>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground">{selectedRole.environmentDescription}</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {selectedRole.highlights.map((highlight) => (
+                      <div key={highlight.title} className="bg-background rounded-xl border p-4">
+                        <p className="text-sm font-medium text-muted-foreground">{highlight.title}</p>
+                        <p className="text-foreground text-lg font-semibold">{highlight.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex-1 space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Belangrijkste features</h3>
+                    <div className="space-y-3">
+                      {selectedRole.features.map((feature) => (
+                        <div key={feature.title} className="flex gap-3 bg-white rounded-xl border p-3">
+                          <feature.icon className="w-5 h-5 text-primary mt-1" />
+                          <div>
+                            <p className="font-semibold text-foreground">{feature.title}</p>
+                            <p className="text-sm text-muted-foreground">{feature.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">User flows</h3>
+                    <ol className="space-y-2">
+                      {selectedRole.flows.map((flow, index) => (
+                        <li key={flow} className="flex gap-3">
+                          <span className="text-primary font-semibold">{index + 1}.</span>
+                          <p className="text-muted-foreground">{flow}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h2 className="text-2xl font-bold mb-4">
-              Welkom, {selectedRoleData.title}! 💛
-            </h2>
-            <div className="space-y-4 text-left bg-muted/50 rounded-lg p-6">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">✨</span>
-                <div>
-                  <h3 className="font-semibold mb-1">Portfolio</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Houd je groei en ontwikkeling bij
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🎯</span>
-                <div>
-                  <h3 className="font-semibold mb-1">Sessies & Reflecties</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Log je sessies en leer van je ervaringen
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">🌱</span>
-                <div>
-                  <h3 className="font-semibold mb-1">Community</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Deel successen en inspireer elkaar
-                  </p>
-                </div>
-              </div>
-            </div>
-            <p className="mt-6 text-sm text-muted-foreground">
-              Je kunt altijd je instellingen aanpassen
-            </p>
           </div>
         )}
       </div>
 
-      {/* Footer Button */}
       <div className="p-6 bg-card border-t">
-        <div className="max-w-md mx-auto flex gap-3">
+        <div className="max-w-2xl mx-auto flex gap-4">
           {step > 1 && (
-            <Button variant="outline" onClick={() => setStep(step - 1)} className="flex-1">
-              Terug
+            <Button variant="ghost" size="lg" onClick={() => setStep(1)} className="flex-1">
+              Kies andere rol
             </Button>
           )}
           <Button
-            onClick={handleNext}
-            disabled={step === 1 && !role}
-            className="flex-1"
             size="lg"
+            disabled={!selectedRoleId}
+            className="flex-1"
+            onClick={handleContinue}
           >
-            {step === 1 ? "Volgende" : "Start! 🎉"}
+            {step === 1
+              ? "Bekijk omgeving"
+              : `Ga naar ${selectedRole?.title ?? "rol"} omgeving`}
           </Button>
         </div>
       </div>
@@ -194,3 +191,4 @@ const Onboarding = () => {
 };
 
 export default Onboarding;
+
