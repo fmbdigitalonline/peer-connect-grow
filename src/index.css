@@ -138,11 +138,24 @@
   .bg-gradient-warm {
     background: linear-gradient(135deg, hsl(var(--peer-orange)), hsl(var(--peer-red)));
   }
-  
+
   .bg-gradient-fresh {
     background: linear-gradient(135deg, hsl(var(--peer-teal)), hsl(var(--peer-lime)));
   }
-  
+
+  .bg-gradient-soft {
+    background:
+      radial-gradient(circle at top, hsla(var(--peer-purple), 0.16), transparent 55%),
+      radial-gradient(circle at 20% 20%, hsla(var(--peer-orange), 0.2), transparent 45%),
+      linear-gradient(180deg, #fdf7ff 0%, #f6fbff 100%);
+  }
+
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
   /* Animation utilities */
   .animate-fade-in {
     animation: fadeIn 0.3s ease-in;

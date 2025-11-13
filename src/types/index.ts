@@ -5,19 +5,33 @@ export type Urgency = "urgent" | "this_week" | "flexible";
 export type Format = "1on1" | "small_group" | "online";
 export type RequestStatus = "pending" | "matched" | "cancelled" | "completed";
 
+export type HelpType = "explanation" | "practice" | "social" | "motivation";
+
+export interface AvailabilityBlock {
+  day: string;
+  from: string;
+  to: string;
+}
+
 export interface HelpRequest {
   id: string;
   supporteeId: string;
   subject: string;
   topic: string;
-  description: string;
-  urgency: Urgency;
-  format: Format;
-  preferredTimes: string[];
+  helpType: HelpType;
+  availability: AvailabilityBlock[];
+  mood?: number | null;
+  moodSkipped?: boolean;
+  desiredBuddy?: string;
+  description?: string;
+  urgency?: Urgency;
+  format?: Format;
+  preferredTimes?: string[];
   locationPreference?: string;
   status: RequestStatus;
   createdAt: Date;
   matchedBuddyId?: string;
+  coachAlert?: boolean;
 }
 
 export type MatchStatus = "proposed" | "accepted" | "declined" | "confirmed";
@@ -32,6 +46,10 @@ export interface Match {
   subject: string;
   topic: string;
   description: string;
+  helpType?: HelpType;
+  availability?: AvailabilityBlock[];
+  mood?: number | null;
+  moodSkipped?: boolean;
   proposedTime: Date;
   location: string;
   createdAt: Date;
@@ -74,4 +92,11 @@ export interface Subject {
   id: string;
   name: string;
   icon: string;
+}
+
+export interface MatchSuggestion {
+  buddyId: string;
+  buddyName: string;
+  confidence: number;
+  reason: string;
 }
