@@ -142,6 +142,30 @@ const Home = () => {
           action: "/community",
         },
       ];
+    } else if (role === "coach") {
+      return [
+        {
+          title: "Dashboard",
+          description: "Bekijk je peers en activiteiten",
+          icon: TrendingUp,
+          color: "peer-teal",
+          action: "/coach",
+        },
+        {
+          title: "Bibliotheek",
+          description: "Materialen en oefeningen",
+          icon: BookOpen,
+          color: "peer-orange",
+          action: "/library",
+        },
+        {
+          title: "Community",
+          description: "Volg de community",
+          icon: MessageSquare,
+          color: "peer-magenta",
+          action: "/community",
+        },
+      ];
     }
     return [];
   };
