@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { roleConfigs, type RoleConfig } from "@/lib/roleConfigs";
 import { cn } from "@/lib/utils";
+import SupporteeJourney from "./SupporteeJourney";
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="space-y-4">
@@ -34,6 +35,10 @@ const RoleEnvironment = () => {
         <Button size="lg" onClick={() => navigate("/onboarding")}>Terug naar onboarding</Button>
       </div>
     );
+  }
+
+  if (role.id === "supportee") {
+    return <SupporteeJourney />;
   }
 
   return (
