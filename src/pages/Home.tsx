@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import peerLogo from "@/assets/peer-logo.tiff";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -175,26 +176,33 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Hero Header */}
-      <div className="bg-gradient-peer text-white px-6 py-8 rounded-b-3xl shadow-lg">
+      <div className="bg-white px-6 py-8 rounded-b-3xl shadow-lg border-b border-border">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <div className="bg-white p-3 rounded-xl">
+            <img src={peerLogo} alt="Peer2Peer Logo" className="h-12 w-auto" />
+          </div>
+        </div>
+
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-sm opacity-90">{getGreeting()},</p>
-            <h1 className="text-3xl font-extrabold">{userName}</h1>
-            <Badge className="mt-2 bg-white/20 text-white border-white/30">
+            <p className="text-sm text-muted-foreground">{getGreeting()},</p>
+            <h1 className="text-3xl font-extrabold text-foreground">{userName}</h1>
+            <Badge className="mt-2 bg-peer-teal/10 text-peer-teal border-peer-teal/20">
               {getRoleName()}
             </Badge>
           </div>
           <div className="text-right">
-            <div className="bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm">
+            <div className="bg-gradient-peer rounded-full px-4 py-2">
               <p className="text-2xl font-bold">🥈</p>
-              <p className="text-xs">Practitioner</p>
+              <p className="text-xs text-white">Practitioner</p>
             </div>
           </div>
         </div>
 
         {/* Streak indicator */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-4">
-          <div className="flex items-center justify-between text-white">
+        <Card className="bg-gradient-soft border-border p-4">
+          <div className="flex items-center justify-between text-foreground">
             <div className="flex items-center gap-2">
               <span className="text-2xl">🔥</span>
               <div>
