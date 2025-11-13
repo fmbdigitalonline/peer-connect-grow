@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { UserCircle, Users, Sparkles, GraduationCap } from "lucide-react";
+import peerLogo from "@/assets/peer-logo.tiff";
 
 type Role = "supportee" | "buddy" | "leader" | "coach" | null;
 
@@ -64,10 +65,15 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <div className="bg-gradient-peer text-white py-8 px-6 text-center">
-        <h1 className="text-4xl font-extrabold mb-2">🍐 Peer2Peer</h1>
-        <p className="text-lg opacity-90">Leren van, met en door elkaar</p>
+      {/* Header with Logo */}
+      <div className="bg-gradient-peer text-white py-8 px-6">
+        <div className="flex justify-center mb-4">
+          <div className="bg-white p-4 rounded-xl shadow-lg">
+            <img src={peerLogo} alt="Peer2Peer Logo" className="h-16 w-auto" />
+          </div>
+        </div>
+        <h1 className="text-4xl font-extrabold text-center mb-2">Peer2Peer</h1>
+        <p className="text-lg opacity-90 text-center">Leren van, met en door elkaar</p>
       </div>
 
       {/* Progress indicator */}

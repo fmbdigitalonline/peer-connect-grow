@@ -11,6 +11,8 @@ import HelpRequest from "./pages/HelpRequest";
 import Matches from "./pages/Matches";
 import Sessions from "./pages/Sessions";
 import SessionDetail from "./pages/SessionDetail";
+import Library from "./pages/Library";
+import CoachDashboard from "./pages/CoachDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +31,8 @@ const App = () => (
           <Route path="/matches" element={<Matches />} />
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/session/:id" element={<SessionDetail />} />
+          <Route path="/library" element={<Library />} />
+          <Route path="/coach" element={<CoachDashboard />} />
           <Route path="/community" element={<Community />} />
           <Route path="/portfolio" element={<Portfolio />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
