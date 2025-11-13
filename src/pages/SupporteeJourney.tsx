@@ -1,809 +1,435 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Slider } from "@/components/ui/slider";
-import { Progress } from "@/components/ui/progress";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import {
-  Brain,
-  GraduationCap,
-  Languages,
-  PlayCircle,
+  ArrowLeft,
+  ArrowRight,
+  CalendarClock,
+  CheckCircle2,
+  BookOpenCheck,
+  Compass,
+  HelpCircle,
+  MessageSquare,
+  MessageSquareHeart,
+  NotebookPen,
   ShieldCheck,
-  Smile,
   Sparkles,
-  Trophy,
   Users,
-  Video,
+  Workflow,
 } from "lucide-react";
-import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
-const journeySteps = [
+const capabilityBlocks = [
   {
-    id: "onboarding",
     title: "Onboarding",
-    emoji: "🧭",
-    description: "Taal, interesses en hulpvragen",
+    description: "Persoonlijke check-in & doelen",
+    icon: Compass,
+    accent: "from-[#f4ecff] to-[#e4d5ff] text-[#7c5cff]",
   },
   {
-    id: "match",
-    title: "AI Match",
-    emoji: "🤖",
-    description: "Krijg een buddy voorstel",
+    title: "Buddy Flow",
+    description: "Matches, sessies en feedback",
+    icon: Users,
+    accent: "from-[#e7f2ff] to-[#d1e8ff] text-[#2563eb]",
   },
   {
-    id: "collaboration",
-    title: "Samenwerken",
-    emoji: "🤝",
-    description: "Check-ins en reflecties",
-  },
-  {
-    id: "portfolio",
     title: "Portfolio",
-    emoji: "📈",
-    description: "Zie je groei",
-  },
-  {
-    id: "library",
-    title: "Bibliotheek",
-    emoji: "📚",
-    description: "Microlearning",
-  },
-  {
-    id: "community",
-    title: "Community",
-    emoji: "🌟",
-    description: "Deel successen",
+    description: "Reflecties, bewijslast en groei",
+    icon: BookOpenCheck,
+    accent: "from-[#e8f9f0] to-[#d2f5e0] text-[#16a34a]",
   },
 ] as const;
 
-type JourneyStepId = (typeof journeySteps)[number]["id"];
-
-const languages = ["Nederlands", "Engels", "Arabisch", "Tigrinya", "Turks"];
-const interests = [
-  "Technologie",
-  "Sport",
-  "Muziek",
-  "Koken",
-  "Gezondheid",
-  "Taal",
-];
-const classLevels = ["Taalklas", "Brugklas", "MBO 1", "MBO 2", "HAVO"];
-const comfortLevels = [
-  { value: 1, label: "Ik voel me gespannen", emoji: "😅" },
-  { value: 2, label: "Best spannend", emoji: "😬" },
-  { value: 3, label: "Gaat wel", emoji: "🙂" },
-  { value: 4, label: "Ik voel me oké", emoji: "😊" },
-  { value: 5, label: "Ik ben klaar!", emoji: "😎" },
-];
-const helpThemes = [
+const journeySteps = [
   {
-    id: "language",
-    label: "Taal",
-    description: "Praat, lees en oefen je woordenschat",
-    icon: Languages,
+    id: "intake",
+    order: 1,
+    title: "Intake & taalcheck",
+    description:
+      "We starten met een korte intake om taalniveau, comfort en doelen scherp te krijgen. De omgeving wordt direct in jouw taal klaargezet.",
+    icon: Compass,
+    highlights: ["Niveau-check", "Persoonlijke doelen"],
+    stats: [
+      { label: "Instap", value: "3 min" },
+      { label: "Voorkeurstaal", value: "NL/ENG" },
+    ],
+    ctas: [
+      { label: "Herstart intake", route: "/onboarding?role=supportee" },
+      { label: "Rolkeuze", route: "/onboarding", variant: "outline" },
+    ],
   },
   {
-    id: "rules",
-    label: "Schoolregels",
-    description: "Hoe werkt de school en wat wordt verwacht",
+    id: "help-request",
+    order: 2,
+    title: "Hulpvraag indienen",
+    description:
+      "Beschrijf je situatie, gevoelens en gewenste uitkomst. Je kunt audio, tekst of emoji gebruiken om het laagdrempelig te houden.",
+    icon: HelpCircle,
+    highlights: ["AI-hulp", "Coach feedback"],
+    stats: [
+      { label: "Concepten", value: "2" },
+      { label: "Laatste update", value: "12:14" },
+    ],
+    ctas: [
+      { label: "Open hulpvraag", route: "/help-request" },
+      { label: "Community check", route: "/community", variant: "outline" },
+    ],
+  },
+  {
+    id: "match",
+    order: 3,
+    title: "Buddy match & sessies",
+    description:
+      "De AI doet een voorstel, een coach checkt mee en jij plant direct de eerste sessies. Alles wordt automatisch in je agenda gezet.",
+    icon: Users,
+    highlights: ["AI-match", "Coach review"],
+    stats: [
+      { label: "Matches", value: "+2" },
+      { label: "Sessies", value: "3 gepland" },
+    ],
+    ctas: [
+      { label: "Bekijk matches", route: "/matches" },
+      { label: "Plan sessies", route: "/sessions", variant: "outline" },
+    ],
+  },
+  {
+    id: "portfolio",
+    order: 4,
+    title: "Reflecties & portfolio",
+    description:
+      "Na iedere sessie voeg je bewijslast en reflecties toe. Je ziet groei en acties terug in één overzicht dat je kunt delen met coach of school.",
+    icon: BookOpenCheck,
+    highlights: ["Bewijslast", "Reflecties"],
+    stats: [
+      { label: "Items", value: "12" },
+      { label: "Laatste reflectie", value: "gisteren" },
+    ],
+    ctas: [
+      { label: "Open portfolio", route: "/portfolio" },
+      { label: "Naar sessies", route: "/sessions", variant: "outline" },
+    ],
+  },
+] as const;
+
+const featureHighlights = [
+  {
+    title: "Supportee Journey",
+    description: "Stap-voor-stap onboarding en reflecties afgestemd op taalniveau.",
+    icon: Workflow,
+  },
+  {
+    title: "Buddy Pair",
+    description: "AI-voorstellen, coachcontrole en duidelijke gezamenlijke doelen.",
+    icon: MessageSquareHeart,
+  },
+  {
+    title: "Veilige communicatie",
+    description: "Gemonitorde check-ins en chats binnen een gesloten omgeving.",
     icon: ShieldCheck,
   },
+] as const;
+
+const featureDemos = [
   {
-    id: "homework",
-    label: "Huiswerk",
-    description: "Maak opdrachten samen, plan en leer",
-    icon: GraduationCap,
+    title: "Hulpvraagformulier",
+    description: "Toont live hoe emoji, audio en tekst elkaar versterken voor duidelijke hulpvragen.",
+    icon: HelpCircle,
+    route: "/help-request",
+    status: "Laatste concept 12:14",
   },
   {
-    id: "social",
-    label: "Sociaal",
-    description: "Vrienden maken en samenwerken",
+    title: "Buddy matching",
+    description: "Gebruik de AI-matrix en coach review om geschikte buddies te selecteren.",
     icon: Users,
+    route: "/matches",
+    status: "2 nieuwe voorstellen",
   },
+  {
+    title: "Sessies plannen",
+    description: "Plan check-ins, volg acties en bekijk notities rechtstreeks vanuit de flow.",
+    icon: CalendarClock,
+    route: "/sessions",
+    status: "3 sessies deze week",
+  },
+  {
+    title: "Portfolio & reflecties",
+    description: "Bewaar audio, tekst en bewijsstukken zodat coaches groei zien.",
+    icon: NotebookPen,
+    route: "/portfolio",
+    status: "12 items gepubliceerd",
+  },
+] as const;
+
+const buddyTouchpoints = [
+  {
+    label: "Laatste check-in",
+    value: "Vandaag 09:20",
+    icon: MessageSquare,
+  },
+  {
+    label: "Coach review",
+    value: "Goedgekeurd",
+    icon: CheckCircle2,
+  },
+  {
+    label: "Community inspiratie",
+    value: "3 nieuwe reacties",
+    icon: MessageSquareHeart,
+  },
+] as const;
+
+const focusPoints = [
+  "Eenvoudige onboarding in de eigen taal",
+  "Begeleide buddy-momenten met duidelijke doelen",
+  "Reflecties en portfolio-opbouw in één overzicht",
 ];
 
-const futureSkills = [
-  { id: "collaboration", label: "Samenwerken", emoji: "🧩" },
-  { id: "perseverance", label: "Doorzettingsvermogen", emoji: "💪" },
-  { id: "communication", label: "Communicatie", emoji: "💬" },
-  { id: "selfregulation", label: "Zelfregulatie", emoji: "🧠" },
-];
-
-const microLearnings = [
-  {
-    id: "pronunciation",
-    title: "Uitspraak oefenen",
-    duration: "2 min",
-    level: "Beginner",
-    description: "Korte video met 3 nieuwe klanken",
-  },
-  {
-    id: "schoolrules",
-    title: "Schoolregels uitgelegd",
-    duration: "3 min",
-    level: "Eenvoudig",
-    description: "Wat doe je bij afmelden en pauzes",
-  },
-  {
-    id: "homework",
-    title: "Slim huiswerk plannen",
-    duration: "4 min",
-    level: "Midden",
-    description: "Gebruik de 1-2-3 planning",
-  },
-];
-
-const initialPosts = [
-  {
-    id: 1,
-    name: "Noor",
-    cohort: "Taalklas B",
-    text: "Vandaag voor het eerst zelf mijn presentatie gedaan!",
-    likes: 12,
-    moderated: true,
-  },
-  {
-    id: 2,
-    name: "Luis",
-    cohort: "Brugklas C",
-    text: "Mijn buddy hielp me met mijn eerste Nederlandse sollicitatiebrief.",
-    likes: 8,
-    moderated: true,
-  },
+const userFlows = [
+  "Onboarding: check-ins en stel jouw hulpvraag scherp",
+  "Ontvang buddy-matches en plan begeleide sessies",
+  "Reflecteer en voeg sessies toe aan je portfolio",
 ];
 
 const SupporteeJourney = () => {
   const navigate = useNavigate();
-  const [activeStep, setActiveStep] = useState<JourneyStepId>("onboarding");
-  const [language, setLanguage] = useState("Nederlands");
-  const [selectedInterests, setSelectedInterests] = useState<string[]>(["Taal"]);
-  const [classLevel, setClassLevel] = useState("Taalklas");
-  const [comfort, setComfort] = useState([3]);
-  const [selectedThemes, setSelectedThemes] = useState<string[]>(["language"]);
-  const [helpText, setHelpText] = useState("Ik wil iemand die me helpt met meer Nederlandse woorden in de klas gebruiken.");
-  const [tourActive, setTourActive] = useState(false);
-  const [tourProgress, setTourProgress] = useState(0);
-  const [matchStatus, setMatchStatus] = useState<"pending" | "confirmed" | "declined">("pending");
-  const [coachApproved, setCoachApproved] = useState(false);
-  const [checkInMood, setCheckInMood] = useState("😊");
-  const [sessionReflection, setSessionReflection] = useState({
-    wentWell: "",
-    challenge: "",
-    nextStep: "",
-  });
-  const [skillHighlights, setSkillHighlights] = useState<string[]>([
-    "collaboration",
-    "communication",
-  ]);
-  const [sharedMoment, setSharedMoment] = useState("");
-  const [posts, setPosts] = useState(initialPosts);
-  const [pendingMoment, setPendingMoment] = useState<string | null>(null);
+  const [activeStepId, setActiveStepId] = useState(journeySteps[0].id);
 
-  useEffect(() => {
-    if (!tourActive) return;
-    setTourProgress(0);
-    let elapsed = 0;
-    const interval = setInterval(() => {
-      elapsed += 1;
-      setTourProgress((elapsed / 30) * 100);
-      if (elapsed >= 30) {
-        clearInterval(interval);
-        setTourActive(false);
-        toast.success("Tour afgerond! Je kent nu alle schermen.");
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [tourActive]);
-
-  useEffect(() => {
-    if (matchStatus !== "confirmed") {
-      setCoachApproved(false);
-      return;
-    }
-    const timeout = setTimeout(() => setCoachApproved(true), 2000);
-    return () => clearTimeout(timeout);
-  }, [matchStatus]);
-
-  const toggleInterest = (interest: string) => {
-    setSelectedInterests((prev) =>
-      prev.includes(interest)
-        ? prev.filter((item) => item !== interest)
-        : [...prev, interest]
-    );
-  };
-
-  const toggleTheme = (id: string) => {
-    setSelectedThemes((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
-
-  const currentComfort = useMemo(() => comfort[0], [comfort]);
-
-  const handleSaveOnboarding = () => {
-    toast.success("Onboarding opgeslagen ✅");
-    setActiveStep("match");
-  };
-
-  const handleMatchAction = (type: "confirm" | "decline") => {
-    setMatchStatus(type === "confirm" ? "confirmed" : "declined");
-    toast(type === "confirm" ? "Buddy bevestigd!" : "We zoeken een nieuwe match");
-  };
-
-  const handleReflectionSave = () => {
-    if (!sessionReflection.wentWell || !sessionReflection.challenge) {
-      toast.error("Beantwoord minimaal wat goed ging en wat lastig was");
-      return;
-    }
-    setSkillHighlights(["collaboration", "perseverance", "communication"]);
-    toast.success("Check-in en reflectie opgeslagen");
-    setActiveStep("portfolio");
-  };
-
-  const handleDownloadProof = () => {
-    toast("Bewijs gedownload (mock)");
-  };
-
-  const handleStartLearning = (title: string) => {
-    toast(`Microlearning \"${title}\" geopend`);
-  };
-
-  const handleShareMoment = () => {
-    if (!sharedMoment.trim()) {
-      toast.error("Schrijf eerst je succesmoment");
-      return;
-    }
-    setPendingMoment(sharedMoment);
-    setSharedMoment("");
-    toast("Moment ingestuurd voor moderatie");
-  };
-
-  const handleLike = (postId: number) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? { ...post, likes: post.likes + 1 }
-          : post
-      )
-    );
-  };
-
-  const goToNextStep = () => {
-    const currentIndex = journeySteps.findIndex((step) => step.id === activeStep);
-    const nextStep = journeySteps[currentIndex + 1];
-    if (nextStep) {
-      setActiveStep(nextStep.id);
-    }
-  };
+  const activeStep = useMemo(
+    () => journeySteps.find((step) => step.id === activeStepId) ?? journeySteps[0],
+    [activeStepId],
+  );
+  const renderedFocus = useMemo(
+    () =>
+      focusPoints.map((point) => (
+        <li key={point} className="flex items-start gap-2 text-sm text-muted-foreground">
+          <Sparkles className="h-4 w-4 text-primary mt-0.5" />
+          <span>{point}</span>
+        </li>
+      )),
+    [],
+  );
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <Navigation />
-      <div className="bg-white border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col gap-6 lg:flex-row lg:items-center">
-          <div className="flex-1 space-y-4">
-            <p className="text-sm uppercase tracking-wide text-muted-foreground">Supportee Journey</p>
-            <h1 className="text-4xl font-bold text-foreground">Jouw end-to-end begeleiding</h1>
-            <p className="text-muted-foreground max-w-2xl">
-              Kies jouw tempo: start met je taal en hulpvraag, ontmoet je buddy, groei door met microlearnings en sluit af met een trots moment voor de community.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="outline">1:1 Buddy</Badge>
-              <Badge variant="outline">Veiligheid eerst</Badge>
-              <Badge variant="outline">Groei tracken</Badge>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3 min-w-[220px]">
-            <Button onClick={() => navigate("/onboarding?role=supportee")}>Terug naar rolkeuze</Button>
-            <Button variant="outline" onClick={() => navigate("/home")}>Ga naar Home</Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 flex flex-col gap-6 lg:flex-row">
-        <aside className="lg:w-72 space-y-3">
-          <p className="text-sm font-semibold text-muted-foreground">Journey stappen</p>
-          <div className="space-y-2">
-            {journeySteps.map((step, index) => (
-              <button
-                key={step.id}
-                onClick={() => setActiveStep(step.id)}
-                className={cn(
-                  "w-full flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all",
-                  activeStep === step.id
-                    ? "border-primary bg-primary/5 shadow"
-                    : "border-border hover:border-primary/50"
-                )}
-              >
-                <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold">
-                  {index + 1}
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">
-                    {step.emoji} {step.title}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{step.description}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        <section className="flex-1 space-y-6">
-          {activeStep === "onboarding" && (
-            <Card className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Stap 1</p>
-                  <h2 className="text-2xl font-bold">Onboarding</h2>
-                </div>
-                <Badge variant="secondary">3 min</Badge>
-              </div>
-
-              <div className="grid gap-6 lg:grid-cols-2">
-                <div className="space-y-4">
-                  <div>
-                    <Label>Taalkeuze</Label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {languages.map((lang) => (
-                        <Button
-                          key={lang}
-                          type="button"
-                          variant={language === lang ? "default" : "outline"}
-                          onClick={() => setLanguage(lang)}
-                        >
-                          {lang}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label>Jouw klas</Label>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      {classLevels.map((level) => (
-                        <button
-                          key={level}
-                          onClick={() => setClassLevel(level)}
-                          className={cn(
-                            "rounded-xl border p-3 text-left",
-                            classLevel === level
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/50"
-                          )}
-                        >
-                          <p className="font-semibold">{level}</p>
-                          <p className="text-xs text-muted-foreground">{level === "Taalklas" ? "Nieuwkomer" : ""}</p>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label>Comfortniveau</Label>
-                    <div className="mt-3 space-y-2">
-                      <Slider
-                        value={comfort}
-                        min={1}
-                        max={5}
-                        step={1}
-                        onValueChange={setComfort}
-                      />
-                      <div className="flex items-center gap-3 text-sm">
-                        <span className="text-2xl">{comfortLevels[currentComfort - 1]?.emoji}</span>
-                        <p className="text-muted-foreground">
-                          {comfortLevels[currentComfort - 1]?.label}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <Label>Interesses</Label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {interests.map((interest) => (
-                        <button
-                          key={interest}
-                          onClick={() => toggleInterest(interest)}
-                          className={cn(
-                            "px-4 py-2 rounded-full border text-sm",
-                            selectedInterests.includes(interest)
-                              ? "border-primary bg-primary/10"
-                              : "border-border"
-                          )}
-                        >
-                          {interest}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label>Hulpvraag</Label>
-                    <Textarea
-                      value={helpText}
-                      onChange={(e) => setHelpText(e.target.value)}
-                      rows={4}
-                      maxLength={160}
-                      placeholder="Ik wil iemand die me helpt met ..."
-                    />
-                    <p className="text-xs text-muted-foreground text-right">
-                      {helpText.length}/160
-                    </p>
-                  </div>
-
-                  <div>
-                    <Label>3 simpele thema's</Label>
-                    <div className="grid gap-3 mt-3">
-                      {helpThemes.map((theme) => (
-                        <label
-                          key={theme.id}
-                          className={cn(
-                            "flex items-start gap-3 rounded-xl border p-3 cursor-pointer",
-                            selectedThemes.includes(theme.id)
-                              ? "border-primary bg-primary/5"
-                              : "border-border"
-                          )}
-                        >
-                          <Checkbox
-                            checked={selectedThemes.includes(theme.id)}
-                            onCheckedChange={() => toggleTheme(theme.id)}
-                          />
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <theme.icon className="h-4 w-4 text-primary" />
-                              <p className="font-semibold">{theme.label}</p>
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                              {theme.description}
-                            </p>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-3">
-                {[{ title: "Je buddy", icon: Users, text: "Leer hoe jullie chat en sessies werken" }, { title: "Jouw groei", icon: Sparkles, text: "Bekijk badges en future skills" }, { title: "Veiligheid", icon: ShieldCheck, text: "Coach kijkt mee en bewaakt privacy" }].map((item) => (
-                  <Card key={item.title} className="p-4 bg-muted/50">
-                    <div className="flex items-center gap-2 mb-2">
-                      <item.icon className="h-4 w-4 text-primary" />
-                      <p className="text-sm font-semibold">{item.title}</p>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{item.text}</p>
-                  </Card>
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-center gap-3">
-                  <Button variant={tourActive ? "destructive" : "outline"} onClick={() => setTourActive((prev) => !prev)}>
-                    <PlayCircle className="h-4 w-4 mr-2" />
-                    {tourActive ? "Stop tour" : "Start 30 sec tour"}
-                  </Button>
-                  {tourActive && (
-                    <div className="min-w-[180px]">
-                      <Progress value={tourProgress} />
-                      <p className="text-xs text-muted-foreground mt-1">{Math.round((tourProgress / 100) * 30)}s</p>
-                    </div>
-                  )}
-                </div>
-                <Button onClick={handleSaveOnboarding}>Bewaar onboarding</Button>
-              </div>
-            </Card>
-          )}
-
-          {activeStep === "match" && (
-            <Card className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Stap 2</p>
-                  <h2 className="text-2xl font-bold">AI Match</h2>
-                </div>
-                <Badge variant={coachApproved ? "default" : "outline"} className="flex items-center gap-1">
-                  <ShieldCheck className="h-4 w-4" />
-                  {coachApproved ? "Coach goedgekeurd" : "Coach controle"}
-                </Badge>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <Card className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
-                  <div className="flex items-center gap-3">
-                    <div className="h-14 w-14 rounded-2xl bg-white flex items-center justify-center text-3xl">😊</div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Voorgestelde buddy</p>
-                      <h3 className="text-xl font-semibold">Sara Janssen</h3>
-                      <p className="text-sm">4 VWO · Nederlands & Engels</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-emerald-600" />
-                      <span>Interesse: Muziek, taal</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-emerald-600" />
-                      <span>Zelfde klasniveau</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Languages className="h-4 w-4 text-emerald-600" />
-                      <span>Spreekt {language}</span>
-                    </div>
-                  </div>
-                </Card>
-
-                <div className="space-y-3 text-sm">
-                  <p className="font-semibold">Waarom deze match?</p>
-                  <ul className="space-y-2 text-muted-foreground">
-                    <li>• Hulpvraag: {helpText.slice(0, 60)}...</li>
-                    <li>• Beschikbaar op dezelfde tijden</li>
-                    <li>• Buddy heeft ervaring met {selectedThemes.map((themeId) => helpThemes.find((theme) => theme.id === themeId)?.label).filter(Boolean).join(", ")}</li>
-                  </ul>
-                  <p className="text-xs">Coach checkt op achtergrond of deze match veilig en passend is.</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 md:flex-row">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => handleMatchAction("decline")}
-                >
-                  Ik wil liever iemand anders
-                </Button>
-                <Button
-                  className="flex-1"
-                  onClick={() => handleMatchAction("confirm")}
-                >
-                  Bevestig buddy
-                </Button>
-              </div>
-
-              {matchStatus !== "pending" && (
-                <Card className="p-4 bg-muted/50">
-                  <p className="text-sm font-semibold">Status</p>
-                  <p className="text-muted-foreground">
-                    {matchStatus === "confirmed"
-                      ? "Je buddy is bevestigd! Coach laat jullie snel starten"
-                      : "We zoeken een nieuwe buddy voor jou"}
-                  </p>
-                </Card>
-              )}
-            </Card>
-          )}
-
-          {activeStep === "collaboration" && (
-            <Card className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Stap 3</p>
-                  <h2 className="text-2xl font-bold">Samenwerken met je buddy</h2>
-                </div>
-                <Badge variant="secondary">Per sessie</Badge>
-              </div>
-
-              <div className="grid gap-6 lg:grid-cols-2">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Smile className="h-5 w-5 text-primary" />
-                    Vooraf check-in
-                  </h3>
-                  <p className="text-sm text-muted-foreground">Hoe voel je je vandaag?</p>
-                  <div className="flex gap-2">
-                    {["😊", "🙂", "😐", "😕", "😔"].map((mood) => (
-                      <button
-                        key={mood}
-                        onClick={() => setCheckInMood(mood)}
-                        className={cn(
-                          "text-3xl rounded-2xl border p-3",
-                          checkInMood === mood
-                            ? "border-primary bg-primary/10"
-                            : "border-border"
-                        )}
-                      >
-                        {mood}
-                      </button>
-                    ))}
-                  </div>
-                  <Button variant="outline">Bewaar check-in</Button>
-                </div>
-
-                <div className="space-y-3">
-                  <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Brain className="h-5 w-5 text-primary" />
-                    Reflectie na sessie
-                  </h3>
-                  <Input
-                    placeholder="Wat ging goed?"
-                    value={sessionReflection.wentWell}
-                    onChange={(e) =>
-                      setSessionReflection({ ...sessionReflection, wentWell: e.target.value })
-                    }
-                  />
-                  <Input
-                    placeholder="Wat was lastig?"
-                    value={sessionReflection.challenge}
-                    onChange={(e) =>
-                      setSessionReflection({ ...sessionReflection, challenge: e.target.value })
-                    }
-                  />
-                  <Textarea
-                    placeholder="Volgende keer ga ik ..."
-                    value={sessionReflection.nextStep}
-                    onChange={(e) =>
-                      setSessionReflection({ ...sessionReflection, nextStep: e.target.value })
-                    }
-                  />
-                  <Button onClick={handleReflectionSave}>Bewaar reflectie</Button>
-                </div>
-              </div>
-
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">Automatische Future Skills</p>
-                <div className="flex flex-wrap gap-2">
-                  {futureSkills.map((skill) => (
-                    <Badge
-                      key={skill.id}
-                      variant={skillHighlights.includes(skill.id) ? "default" : "outline"}
-                      className="flex items-center gap-1"
-                    >
-                      {skill.emoji} {skill.label}
-                    </Badge>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Skills worden automatisch getagd op basis van jouw antwoorden en gedrag.
-                </p>
-              </div>
-            </Card>
-          )}
-
-          {activeStep === "portfolio" && (
-            <Card className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Stap 4</p>
-                  <h2 className="text-2xl font-bold">Portfolio</h2>
-                </div>
-                <Button variant="outline" onClick={handleDownloadProof}>
-                  Download bewijs
-                </Button>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-3">
-                {[{ title: "Taal", value: 72 }, { title: "Welbevinden", value: 64 }, { title: "Vaardigheden", value: 80 }].map((metric) => (
-                  <Card key={metric.title} className="p-4">
-                    <p className="text-sm text-muted-foreground">{metric.title}</p>
-                    <p className="text-3xl font-bold">{metric.value}%</p>
-                    <Progress value={metric.value} className="mt-3" />
-                  </Card>
-                ))}
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold mb-3">Badges</p>
-                <div className="flex flex-wrap gap-3">
-                  {[{ title: "Doorzetter", icon: Trophy }, { title: "Goede vraagsteller", icon: Sparkles }, { title: "Veiligheidspartner", icon: ShieldCheck }].map((badge) => (
-                    <div key={badge.title} className="flex items-center gap-2 rounded-full border px-4 py-2">
-                      <badge.icon className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-semibold">{badge.title}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <Card className="p-4 bg-muted/50">
-                <p className="text-sm font-semibold">Bewijs voor mentor/ouders</p>
-                <p className="text-sm text-muted-foreground">
-                  Alle reflecties, badges en sessies worden gebundeld zodat je eenvoudig kunt delen hoe je groeit.
-                </p>
-              </Card>
-            </Card>
-          )}
-
-          {activeStep === "library" && (
-            <Card className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Stap 5</p>
-                  <h2 className="text-2xl font-bold">Bibliotheek</h2>
-                </div>
-                <Badge variant="secondary">Jouw niveau</Badge>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-3">
-                {microLearnings.map((item) => (
-                  <Card key={item.id} className="p-4 flex flex-col gap-3">
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>{item.level}</span>
-                      <span>{item.duration}</span>
-                    </div>
-                    <h3 className="font-semibold text-lg">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground flex-1">{item.description}</p>
-                    <Button variant="outline" onClick={() => handleStartLearning(item.title)}>
-                      <Video className="h-4 w-4 mr-2" />
-                      Start microlearning
-                    </Button>
-                  </Card>
-                ))}
-              </div>
-
-              <Card className="p-4 bg-muted/50">
-                <p className="text-sm font-semibold">Korte uitlegvideo's</p>
-                <p className="text-sm text-muted-foreground">
-                  Alle content is in eenvoudige taal, met ondertiteling en vertaalknoppen.
-                </p>
-              </Card>
-            </Card>
-          )}
-
-          {activeStep === "community" && (
-            <Card className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Stap 6</p>
-                  <h2 className="text-2xl font-bold">Community Wall</h2>
-                </div>
-                <Badge variant="outline">Moderatie aan</Badge>
-              </div>
-
-              <div className="space-y-3">
-                <Label>Deel een succesmoment</Label>
-                <Textarea
-                  placeholder="Wat wil je delen?"
-                  value={sharedMoment}
-                  onChange={(e) => setSharedMoment(e.target.value)}
-                />
-                <Button onClick={handleShareMoment}>Inzenden</Button>
-                {pendingMoment && (
-                  <Card className="p-4 bg-muted/50">
-                    <p className="text-sm font-semibold">In moderatie</p>
-                    <p className="text-sm text-muted-foreground">
-                      "{pendingMoment}" wordt eerst gecheckt door een moderator. Daarna verschijnt het op de wall.
-                    </p>
-                  </Card>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">Likes kan je geven, reacties staan uit (AVG).</p>
-                {posts.map((post) => (
-                  <Card key={post.id} className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <p className="font-semibold">{post.name}</p>
-                        <p className="text-xs text-muted-foreground">{post.cohort}</p>
-                      </div>
-                      <Badge variant="secondary">Gepubliceerd</Badge>
-                    </div>
-                    <p className="text-sm mb-4">{post.text}</p>
-                    <Button variant="ghost" size="sm" onClick={() => handleLike(post.id)}>
-                      ❤️ {post.likes}
-                    </Button>
-                  </Card>
-                ))}
-              </div>
-            </Card>
-          )}
-
-          <div className="flex justify-end">
-            <Button onClick={goToNextStep} disabled={activeStep === journeySteps[journeySteps.length - 1].id}>
-              Volgende stap
+    <div className="min-h-screen bg-[#f4f1fb] px-4 py-10">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Button variant="ghost" className="gap-2 text-muted-foreground" onClick={() => navigate("/onboarding")}>
+            <ArrowLeft className="h-4 w-4" /> Terug naar rolkeuze
+          </Button>
+          <div className="flex flex-wrap gap-3">
+            <Button variant="outline" onClick={() => navigate("/home")}>Bekijk in home</Button>
+            <Button className="gap-2" onClick={() => navigate("/onboarding?role=supportee")}>
+              Activeer omgeving
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
-        </section>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
+          <Card className="border-0 bg-white p-8 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Supportee Journey</p>
+            <h1 className="mt-2 text-4xl font-bold text-foreground">Supportee (Learner) omgeving</h1>
+            <p className="mt-3 text-base text-muted-foreground">
+              Je persoonlijke omgeving richt zich volledig op begeleiding en groei. Alle flows zijn afgestemd op het ontvangen
+              van support, reflecteren op doelen en het bouwen aan vertrouwen met buddies.
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Badge variant="outline">Leerling-first</Badge>
+              <Badge variant="outline">1:1 Buddy</Badge>
+              <Badge variant="outline">Veiligheid</Badge>
+            </div>
+
+            <div className="mt-8 space-y-4">
+              {capabilityBlocks.map((capability) => (
+                <div key={capability.title} className="flex items-center gap-4 rounded-2xl border border-border/60 p-4">
+                  <div
+                    className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${capability.accent}`}
+                  >
+                    <capability.icon className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold text-foreground">{capability.title}</p>
+                    <p className="text-sm text-muted-foreground">{capability.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 space-y-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-sm font-semibold text-muted-foreground">Klik door de journey</p>
+                <Badge variant="secondary">Live demo</Badge>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                {journeySteps.map((step) => (
+                  <button
+                    key={step.id}
+                    type="button"
+                    className={cn(
+                      "rounded-2xl border p-5 text-left transition-all",
+                      step.id === activeStepId
+                        ? "border-primary bg-primary/5 shadow-lg"
+                        : "border-border/60 hover:border-primary/60",
+                    )}
+                    onClick={() => setActiveStepId(step.id)}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-2xl bg-primary/10 p-3 text-primary">
+                          <step.icon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            Stap {step.order}
+                          </p>
+                          <p className="text-base font-semibold text-foreground">{step.title}</p>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <p className="mt-3 text-sm text-muted-foreground">{step.description}</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {step.highlights.map((highlight) => (
+                        <Badge key={highlight} variant="outline">
+                          {highlight}
+                        </Badge>
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <Card className="border border-primary/40 bg-white/90 p-5 shadow-sm">
+                <div className="flex items-center gap-4">
+                  <div className="rounded-2xl bg-primary/10 p-3 text-primary">
+                    <activeStep.icon className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-muted-foreground">Actieve stap</p>
+                    <p className="text-xl font-bold text-foreground">{activeStep.title}</p>
+                    <p className="text-sm text-muted-foreground">{activeStep.description}</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  {activeStep.stats.map((stat) => (
+                    <div key={stat.label} className="rounded-2xl border border-dashed border-primary/40 p-3">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">{stat.label}</p>
+                      <p className="text-lg font-semibold text-foreground">{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {activeStep.ctas.map((cta) => (
+                    <Button
+                      key={cta.label}
+                      variant={cta.variant ?? "default"}
+                      onClick={() => navigate(cta.route)}
+                    >
+                      {cta.label}
+                    </Button>
+                  ))}
+                </div>
+              </Card>
+            </div>
+
+            <div className="mt-8">
+              <p className="text-sm font-semibold text-muted-foreground">Waar focust dit op?</p>
+              <ul className="mt-3 space-y-2">{renderedFocus}</ul>
+            </div>
+          </Card>
+
+          <div className="space-y-6">
+            <Card className="border-0 bg-white p-6 shadow-sm">
+              <h2 className="text-xl font-semibold text-foreground">Belangrijkste features</h2>
+              <div className="mt-4 space-y-4">
+                {featureHighlights.map((feature) => (
+                  <div key={feature.title} className="flex gap-4 rounded-2xl border border-border/70 p-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <feature.icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">{feature.title}</p>
+                      <p className="text-sm text-muted-foreground">{feature.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="border-0 bg-white p-6 shadow-sm">
+              <h2 className="text-xl font-semibold text-foreground">User flows</h2>
+              <ol className="mt-4 space-y-3 text-sm text-foreground">
+                {userFlows.map((flow, index) => (
+                  <li key={flow} className="flex gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">
+                      {index + 1}
+                    </div>
+                    <span className="leading-relaxed">{flow}</span>
+                  </li>
+                ))}
+              </ol>
+            </Card>
+
+            <Card className="border-0 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-semibold text-foreground">Demo de features</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Klik door om de echte schermen te openen. Ideaal voor demo's of live walkthroughs.
+                  </p>
+                </div>
+                <Badge variant="secondary">Interactief</Badge>
+              </div>
+
+              <div className="mt-4 space-y-4">
+                {featureDemos.map((feature) => (
+                  <button
+                    key={feature.title}
+                    type="button"
+                    onClick={() => navigate(feature.route)}
+                    className="w-full rounded-2xl border border-border/60 p-4 text-left transition hover:border-primary/60"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                        <feature.icon className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-foreground">{feature.title}</p>
+                        <p className="text-sm text-muted-foreground">{feature.description}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs font-medium text-muted-foreground">{feature.status}</p>
+                        <span className="inline-flex items-center text-sm text-primary">Openen</span>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="border-0 bg-white p-6 shadow-sm">
+              <h2 className="text-xl font-semibold text-foreground">Live touchpoints</h2>
+              <div className="mt-4 space-y-3">
+                {buddyTouchpoints.map((touchpoint) => (
+                  <div key={touchpoint.label} className="flex items-center gap-4 rounded-2xl border border-border/70 p-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted">
+                      <touchpoint.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-foreground">{touchpoint.label}</p>
+                      <p className="text-sm text-muted-foreground">{touchpoint.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
