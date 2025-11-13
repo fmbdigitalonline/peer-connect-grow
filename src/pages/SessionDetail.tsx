@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Play, StopCircle } from "lucide-react";
+import { Play, StopCircle } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
 import { getStorageData, setStorageData, competencies } from "@/lib/mockData";
 import type { Session, MoodEmoji } from "@/types";
 import { toast } from "sonner";
@@ -115,12 +116,10 @@ const SessionDetail = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <header className="bg-card border-b px-6 py-4 flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/sessions")}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
+      <Navigation />
+      <div className="bg-card border-b px-6 py-4">
         <h1 className="text-xl font-bold">Sessie Details</h1>
-      </header>
+      </div>
 
       <div className="px-6 py-6 space-y-6 max-w-2xl mx-auto">
         <Card className="p-6">

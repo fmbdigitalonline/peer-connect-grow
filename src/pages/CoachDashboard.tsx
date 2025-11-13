@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Navigation } from "@/components/Navigation";
 import {
-  ArrowLeft,
   Users,
   TrendingUp,
   AlertCircle,
@@ -137,7 +136,6 @@ const mockAlerts: Alert[] = [
 ];
 
 const CoachDashboard = () => {
-  const navigate = useNavigate();
   const [students] = useState<Student[]>(mockStudents);
   const [alerts] = useState<Alert[]>(mockAlerts);
 
@@ -193,18 +191,11 @@ const CoachDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-soft pb-20">
+      <Navigation />
       {/* Header */}
       <div className="bg-white border-b border-border">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/home")}
-              className="shrink-0"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-foreground">Coach Dashboard</h1>
               <p className="text-sm text-muted-foreground">

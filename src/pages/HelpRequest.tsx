@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
 import { subjects, mockBuddies, setStorageData, getStorageData } from "@/lib/mockData";
 import type { HelpRequest, Urgency, Format } from "@/types";
 import { toast } from "sonner";
@@ -71,12 +72,10 @@ const HelpRequestPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="bg-card border-b px-6 py-4 flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
+      <Navigation />
+      <div className="bg-card border-b px-6 py-4">
         <h1 className="text-xl font-bold">Hulp vragen</h1>
-      </header>
+      </div>
 
       {/* Progress */}
       <div className="px-6 py-4">

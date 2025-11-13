@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Navigation } from "@/components/Navigation";
 import {
   MessageSquare,
   Calendar,
@@ -83,6 +84,7 @@ const Portfolio = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
+      <Navigation />
       {/* Header with Level */}
       <div className="bg-gradient-peer text-white px-6 py-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between mb-4">

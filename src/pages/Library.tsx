@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Navigation } from "@/components/Navigation";
 import {
   Search,
   Clock,
@@ -16,7 +16,6 @@ import {
   Target,
   Star,
   Bookmark,
-  ArrowLeft,
 } from "lucide-react";
 
 type ContentType = "energizer" | "icebreaker" | "didactic" | "subject" | "reflection";
@@ -125,7 +124,6 @@ const mockContent: LibraryContent[] = [
 ];
 
 const Library = () => {
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<ContentType | "all">("all");
   const [content] = useState<LibraryContent[]>(mockContent);
@@ -173,24 +171,15 @@ const Library = () => {
 
   return (
     <div className="min-h-screen bg-gradient-soft pb-20">
+      <Navigation />
       {/* Header */}
       <div className="bg-white border-b border-border sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4 mb-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/home")}
-              className="shrink-0"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Bibliotheek</h1>
-              <p className="text-sm text-muted-foreground">
-                Oefeningen, tips en materialen
-              </p>
-            </div>
+          <div className="mb-4">
+            <h1 className="text-2xl font-bold text-foreground">Bibliotheek</h1>
+            <p className="text-sm text-muted-foreground">
+              Oefeningen, tips en materialen
+            </p>
           </div>
 
           {/* Search */}
