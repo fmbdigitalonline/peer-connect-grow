@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,10 +16,6 @@ import {
   Clock,
   Target,
 } from "lucide-react";
-import {
-  loadSupporteeMatchState,
-  type SupporteeMatchState,
-} from "@/lib/supporteeMatchStorage";
 
 interface Student {
   id: string;
@@ -141,24 +136,8 @@ const mockAlerts: Alert[] = [
 ];
 
 const CoachDashboard = () => {
-  const navigate = useNavigate();
   const [students] = useState<Student[]>(mockStudents);
   const [alerts] = useState<Alert[]>(mockAlerts);
-  const [supporteeMatchState, setSupporteeMatchState] = useState<SupporteeMatchState>(
-    () => loadSupporteeMatchState()
-  );
-
-  useEffect(() => {
-    const refreshState = () => setSupporteeMatchState(loadSupporteeMatchState());
-    refreshState();
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === "supporteeMatchState") {
-        refreshState();
-      }
-    };
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
 
   const getStatusBadge = (status: Student["status"]) => {
     if (status === "active") {
@@ -286,32 +265,6 @@ const CoachDashboard = () => {
             </div>
           </Card>
         </div>
-
-        {supporteeMatchState.matchNeeded && (
-          <Card className="mb-6 border border-dashed border-destructive/40 bg-destructive/5">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
-                <div>
-                  <p className="text-sm font-semibold text-destructive">
-                    Supportee vraagt nieuwe match
-                  </p>
-                  <p className="text-sm text-destructive/80">
-                    Alle voorstellen zijn afgewezen. Check de match-queue om opnieuw te koppelen.
-                  </p>
-                </div>
-              </div>
-              <Button
-                size="sm"
-                variant="destructive"
-                className="self-start"
-                onClick={() => navigate("/matches")}
-              >
-                Open matches
-              </Button>
-            </div>
-          </Card>
-        )}
 
         {/* Urgent Alerts */}
         {urgentAlerts.length > 0 && (
