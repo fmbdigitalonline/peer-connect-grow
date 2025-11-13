@@ -30,6 +30,7 @@ import { subjects, getStorageData, setStorageData } from "@/lib/mockData";
 import { helpTypeOptions, moodScale, dayOptions } from "@/lib/helpRequestOptions";
 import type { AvailabilityBlock, HelpRequest, MatchSuggestion } from "@/types";
 import { callAiMatchService } from "@/lib/matchService";
+import { seedSupporteeMatches } from "@/lib/supporteeMatchStorage";
 
 interface AvailabilityRow extends AvailabilityBlock {
   id: string;
@@ -209,6 +210,20 @@ const HelpRequestPage = () => {
         request.status = "matched";
         request.matchedBuddyId = matches[0].buddyId;
       }
+
+      const sharedTraits: string[] = [];
+      if (selectedSubject?.name) {
+        sharedTraits.push(`Vak: ${selectedSubject.name}`);
+      }
+      if (!moodSkipped && moodValue !== null) {
+        sharedTraits.push("Coach let extra op jouw mood");
+      }
+
+      seedSupporteeMatches(matches, {
+        subjectId: request.subject,
+        subjectLabel: selectedSubject?.name,
+        sharedTraits,
+      });
 
       const requests = getStorageData<HelpRequest[]>("helpRequests", []);
       requests.push(request);

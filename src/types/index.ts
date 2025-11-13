@@ -100,3 +100,26 @@ export interface MatchSuggestion {
   confidence: number;
   reason: string;
 }
+
+export type SupporteeMatchStatus =
+  | "proposed"
+  | "selected"
+  | "rejected"
+  | "expired";
+
+export interface SupporteeMatchOption {
+  matchId: string;
+  buddyId: string;
+  buddyName: string;
+  classLevel: string;
+  subjectId: string;
+  subjectLabel: string;
+  reasons: string[];
+  sharedTraits?: string[];
+  confidence?: number;
+  profileInitials: string;
+  preferenceScore: -1 | 0 | 1;
+  status: SupporteeMatchStatus;
+  createdAt: string;
+  respondedAt?: string;
+}
