@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Navigation } from "@/components/Navigation";
 import {
   MessageSquare,
   Calendar,
@@ -71,8 +72,9 @@ const Community = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
+      <Navigation />
       {/* Header */}
-      <div className="bg-card border-b px-6 py-4 sticky top-0 z-10">
+      <div className="bg-card border-b px-6 py-4">
         <h1 className="text-2xl font-bold">Community</h1>
         <p className="text-sm text-muted-foreground">
           Deel successen en inspireer elkaar

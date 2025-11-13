@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, Clock, Plus } from "lucide-react";
+import { Calendar, Clock, Plus } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
 import { getStorageData } from "@/lib/mockData";
 import type { Session } from "@/types";
 
@@ -46,12 +47,10 @@ const Sessions = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <header className="bg-card border-b px-6 py-4 flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/home")}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
+      <Navigation />
+      <div className="bg-card border-b px-6 py-4">
         <h1 className="text-xl font-bold">Mijn Sessies</h1>
-      </header>
+      </div>
 
       <div className="px-6 py-6 space-y-6 max-w-3xl mx-auto">
         {/* Upcoming Sessions */}
