@@ -12,7 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import peerLogo from "@/assets/peer-logo.tiff";
+import peerLogo from "@/assets/peer-logo.png";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -179,9 +179,7 @@ const Home = () => {
       <div className="bg-white px-6 py-8 rounded-b-3xl shadow-lg border-b border-border">
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <div className="bg-white p-3 rounded-xl">
-            <img src={peerLogo} alt="Peer2Peer Logo" className="h-12 w-auto" />
-          </div>
+          <img src={peerLogo} alt="Peer2Peer Logo" className="h-16 w-auto" />
         </div>
 
         <div className="flex items-center justify-between mb-6">
