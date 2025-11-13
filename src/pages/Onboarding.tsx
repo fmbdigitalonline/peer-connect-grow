@@ -27,8 +27,15 @@ const INTEREST_OPTIONS = [
   "Art & Design",
 ];
 
-const JOURNEY_HIGHLIGHTS = [
-  { emoji: "🎯", title: "Hulpvraag", description: "Formuleer waar je aan wilt werken." },
+type JourneyHighlight = {
+  emoji: string;
+  title: string;
+  description: string;
+  action?: string;
+};
+
+const JOURNEY_HIGHLIGHTS: JourneyHighlight[] = [
+  { emoji: "🎯", title: "Hulpvraag", description: "Formuleer waar je aan wilt werken.", action: "/help-request" },
   { emoji: "🤝", title: "Veilige match", description: "AI & coaches vinden de juiste buddy." },
   { emoji: "🌱", title: "Future Skills", description: "Zie je groei terug in badges." },
 ];
@@ -217,16 +224,32 @@ const Onboarding = () => {
             </div>
             <Separator className="my-8" />
             <div className="grid gap-4 md:grid-cols-3">
-              {JOURNEY_HIGHLIGHTS.map((highlight) => (
-                <div
-                  key={highlight.title}
-                  className="rounded-2xl border border-dashed border-peer-purple/30 bg-muted/30 p-4 text-left"
-                >
-                  <div className="text-3xl mb-3">{highlight.emoji}</div>
-                  <p className="text-sm font-semibold text-foreground">{highlight.title}</p>
-                  <p className="text-xs text-muted-foreground">{highlight.description}</p>
-                </div>
-              ))}
+              {JOURNEY_HIGHLIGHTS.map((highlight) => {
+                const isActionable = Boolean(highlight.action);
+                const Element = isActionable ? "button" : "div";
+
+                return (
+                  <Element
+                    key={highlight.title}
+                    {...(isActionable
+                      ? {
+                          type: "button",
+                          onClick: () => highlight.action && navigate(highlight.action),
+                          "aria-label": `Ga naar ${highlight.title}`,
+                        }
+                      : {})}
+                    className={cn(
+                      "rounded-2xl border border-dashed border-peer-purple/30 bg-muted/30 p-4 text-left transition shadow-sm",
+                      isActionable &&
+                        "hover:border-peer-purple/70 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-peer-purple/40 focus-visible:ring-offset-2",
+                    )}
+                  >
+                    <div className="text-3xl mb-3">{highlight.emoji}</div>
+                    <p className="text-sm font-semibold text-foreground">{highlight.title}</p>
+                    <p className="text-xs text-muted-foreground">{highlight.description}</p>
+                  </Element>
+                );
+              })}
             </div>
           </div>
         );
