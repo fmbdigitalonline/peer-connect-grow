@@ -146,6 +146,7 @@ export const mockCommunityPosts: CommunityPost[] = [
     id: "post-1",
     authorId: "supportee-2",
     authorName: "Emma",
+    authorAvatar: "👧",
     authorLevel: "Practitioner",
     type: "achievement",
     content: "Yes! Mijn eerste badge verdiend! 🎉 Super blij met de Actief Luisteraar badge.",
@@ -162,6 +163,7 @@ export const mockCommunityPosts: CommunityPost[] = [
       },
     ],
     timestamp: new Date("2024-11-13T10:15:00"),
+    date: "13 nov",
     isSpotlighted: true,
     privacy: "school",
   },
@@ -169,6 +171,7 @@ export const mockCommunityPosts: CommunityPost[] = [
     id: "post-2",
     authorId: "supportee-3",
     authorName: "Daan",
+    authorAvatar: "👦",
     authorLevel: "Leader",
     type: "story",
     content:
@@ -179,6 +182,7 @@ export const mockCommunityPosts: CommunityPost[] = [
     ],
     comments: [],
     timestamp: new Date("2024-11-13T09:45:00"),
+    date: "13 nov",
     isSpotlighted: false,
     privacy: "school",
   },
@@ -186,6 +190,7 @@ export const mockCommunityPosts: CommunityPost[] = [
     id: "post-3",
     authorId: "supportee-1",
     authorName: "Lisa",
+    authorAvatar: "👩",
     authorLevel: "Practitioner",
     type: "question",
     content: "Heeft iemand tips voor het plannen van huiswerk? Ik loop altijd achter... 😅",
@@ -198,18 +203,19 @@ export const mockCommunityPosts: CommunityPost[] = [
       },
     ],
     timestamp: new Date("2024-11-12T16:00:00"),
+    date: "12 nov",
     isSpotlighted: false,
     privacy: "school",
   },
 ];
 
 export const getLevelInfo = (xp: number) => {
-  if (xp < 100) return { level: "Starter", progress: xp, nextLevel: 100, color: "from-blue-500 to-cyan-500" };
+  if (xp < 100) return { level: "Starter", title: "🌱 Starter", currentLevel: 1, progress: xp, nextLevel: 100, color: "from-blue-500 to-cyan-500" };
   if (xp < 300)
-    return { level: "Practitioner", progress: xp - 100, nextLevel: 200, color: "from-green-500 to-emerald-500" };
+    return { level: "Practitioner", title: "🥉 Practitioner", currentLevel: 2, progress: xp - 100, nextLevel: 200, color: "from-green-500 to-emerald-500" };
   if (xp < 600)
-    return { level: "Leader", progress: xp - 300, nextLevel: 300, color: "from-purple-500 to-pink-500" };
+    return { level: "Leader", title: "🥈 Leader", currentLevel: 3, progress: xp - 300, nextLevel: 300, color: "from-purple-500 to-pink-500" };
   if (xp < 1000)
-    return { level: "Expert", progress: xp - 600, nextLevel: 400, color: "from-orange-500 to-red-500" };
-  return { level: "Alumni Mentor", progress: xp - 1000, nextLevel: 0, color: "from-yellow-500 to-amber-500" };
+    return { level: "Expert", title: "🥇 Expert", currentLevel: 4, progress: xp - 600, nextLevel: 400, color: "from-orange-500 to-red-500" };
+  return { level: "Alumni Mentor", title: "👑 Alumni Mentor", currentLevel: 5, progress: xp - 1000, nextLevel: 0, color: "from-yellow-500 to-amber-500" };
 };
