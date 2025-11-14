@@ -1,141 +1,99 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { mockSupporteeProfile, getLevelInfo } from "@/lib/mockSupporteeData";
 import { BottomNav } from "@/components/BottomNav";
-import { Progress } from "@/components/ui/progress";
-import { Zap } from "lucide-react";
+import { ProgressRing } from "@/components/ui/progress-ring";
+import { EmojiCard } from "@/components/ui/emoji-card";
+import { Badge } from "@/components/ui/badge";
 
 const SupporteeHub = () => {
   const navigate = useNavigate();
-  const levelInfo = getLevelInfo(mockSupporteeProfile.xp);
+  const { xp, personalInfo } = mockSupporteeProfile;
+  const levelInfo = getLevelInfo(xp);
   const progressToNextLevel = levelInfo.nextLevel > 0 ? (levelInfo.progress / levelInfo.nextLevel) * 100 : 100;
 
-  const quickActions = [
-    {
-      id: 1,
-      title: "Dien hulpvraag in",
-      emoji: "🆘",
-      path: "/help-request",
-      gradient: "from-blue-500 to-purple-500"
-    },
-    {
-      id: 2,
-      title: "Vind een buddy",
-      emoji: "🤝",
-      path: "/matches",
-      gradient: "from-green-500 to-teal-500"
-    },
-    {
-      id: 3,
-      title: "Plan een sessie",
-      emoji: "📅",
-      path: "/sessions",
-      gradient: "from-orange-500 to-red-500"
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 pb-20">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary to-primary-foreground text-white px-6 py-12 rounded-b-[2rem] shadow-xl">
-        <div className="max-w-md mx-auto">
-          <p className="text-sm opacity-80 mb-2">Welkom terug!</p>
-          <h1 className="text-4xl font-extrabold mb-8">
-            Hi {mockSupporteeProfile.personalInfo.name}! 👋
-          </h1>
+    <div className="min-h-screen bg-gradient-to-br from-headspace-mint via-headspace-sky to-headspace-lavender pb-20">
+      {/* Hero Section - Portfolio Style */}
+      <Card className="m-4 bg-gradient-to-br from-headspace-peach to-headspace-pink border-0">
+        <CardContent className="p-8 flex flex-col items-center text-center">
+          <div className="text-7xl mb-4 animate-bounce-in">👋</div>
+          <h1 className="text-2xl font-bold mb-2">Hi {personalInfo.name}!</h1>
+          <Badge className="bg-white/20 text-foreground border-0 backdrop-blur-sm">
+            {levelInfo.title}
+          </Badge>
           
-          {/* Level Circle */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-sm opacity-80">Jouw Level</p>
-                <p className="text-3xl font-bold">{levelInfo.level}</p>
-              </div>
-              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-4xl backdrop-blur">
-                🏆
-              </div>
+          <div className="relative mt-6">
+            <ProgressRing progress={progressToNextLevel} size={140} />
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-3xl font-bold">{levelInfo.currentLevel}</div>
+              <div className="text-xs opacity-80">Level</div>
             </div>
-            <Progress value={progressToNextLevel} className="h-2 mb-2" />
-            <p className="text-xs opacity-80">
-              {Math.round(levelInfo.progress)} / {levelInfo.nextLevel} XP tot volgend level
-            </p>
           </div>
-        </div>
+          
+          <p className="text-sm mt-4 opacity-90">{xp} / {levelInfo.nextLevel} XP</p>
+        </CardContent>
+      </Card>
+
+      {/* Quick Actions - EmojiCards */}
+      <div className="px-4 space-y-3 mb-8">
+        <EmojiCard 
+          emoji="🆘" 
+          title="Hulpvraag"
+          gradient="from-headspace-sky to-headspace-lavender"
+          onClick={() => navigate("/help-request")}
+          className="w-full"
+        />
+        <EmojiCard 
+          emoji="🤝" 
+          title="Vind buddy"
+          gradient="from-headspace-mint to-headspace-sky"
+          onClick={() => navigate("/matches")}
+          className="w-full"
+        />
+        <EmojiCard 
+          emoji="📅" 
+          title="Plan sessie"
+          gradient="from-headspace-peach to-headspace-coral"
+          onClick={() => navigate("/sessions")}
+          className="w-full"
+        />
       </div>
 
-      {/* Main Content */}
-      <div className="px-6 py-8 max-w-md mx-auto">
-        {/* Daily Goal */}
-        <Card className="p-6 mb-6 bg-gradient-to-r from-accent/10 to-accent/5 border-accent/20">
-          <div className="flex items-center gap-3 mb-3">
-            <Zap className="h-6 w-6 text-accent" />
-            <h2 className="text-lg font-bold">Vandaag doel</h2>
-          </div>
-          <p className="text-muted-foreground mb-4">Plan je eerste sessie met een buddy</p>
-          <Button className="w-full rounded-full" onClick={() => navigate("/sessions")}>
-            Start nu
-          </Button>
-        </Card>
-
-        {/* Quick Actions */}
-        <h2 className="text-xl font-bold mb-4">Snelle acties</h2>
-        <div className="space-y-4 mb-8">
-          {quickActions.map((action) => (
-            <Card
-              key={action.id}
-              className="overflow-hidden cursor-pointer transition-transform active:scale-95"
-              onClick={() => navigate(action.path)}
-            >
-              <div className={`h-2 bg-gradient-to-r ${action.gradient}`} />
-              <div className="p-6 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="text-5xl">{action.emoji}</div>
-                  <h3 className="text-lg font-bold">{action.title}</h3>
-                </div>
-                <div className="text-muted-foreground">→</div>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* Explore Section */}
+      {/* Explore Section */}
+      <div className="px-4">
         <h2 className="text-xl font-bold mb-4">Ontdekken</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <Card 
-            className="p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+            className="p-6 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-lavender/30 to-headspace-pink/30 border-0"
             onClick={() => navigate("/library")}
           >
-            <div className="text-4xl mb-3">📚</div>
-            <h3 className="font-bold mb-1">Bibliotheek</h3>
-            <p className="text-xs text-muted-foreground">50+ hulpmiddelen</p>
+            <div className="text-5xl mb-3 animate-float">📚</div>
+            <h3 className="font-semibold">Library</h3>
           </Card>
           
           <Card 
-            className="p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+            className="p-6 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-mint/30 to-headspace-sky/30 border-0"
             onClick={() => navigate("/portfolio")}
           >
-            <div className="text-4xl mb-3">🏅</div>
-            <h3 className="font-bold mb-1">Portfolio</h3>
-            <p className="text-xs text-muted-foreground">Je prestaties</p>
+            <div className="text-5xl mb-3 animate-float">🎯</div>
+            <h3 className="font-semibold">Portfolio</h3>
           </Card>
           
           <Card 
-            className="p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+            className="p-6 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-peach/30 to-headspace-coral/30 border-0"
             onClick={() => navigate("/community")}
           >
-            <div className="text-4xl mb-3">💬</div>
-            <h3 className="font-bold mb-1">Community</h3>
-            <p className="text-xs text-muted-foreground">15+ verhalen</p>
+            <div className="text-5xl mb-3 animate-float">🌟</div>
+            <h3 className="font-semibold">Community</h3>
           </Card>
           
           <Card 
-            className="p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+            className="p-6 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-sky/30 to-headspace-lavender/30 border-0"
             onClick={() => navigate("/supportee/journey")}
           >
-            <div className="text-4xl mb-3">🗺️</div>
-            <h3 className="font-bold mb-1">Journey</h3>
-            <p className="text-xs text-muted-foreground">Jouw pad</p>
+            <div className="text-5xl mb-3 animate-float">🚀</div>
+            <h3 className="font-semibold">Journey</h3>
           </Card>
         </div>
       </div>
