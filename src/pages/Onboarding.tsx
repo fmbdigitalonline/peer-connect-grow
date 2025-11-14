@@ -38,7 +38,13 @@ const Onboarding = () => {
     if (step === 2 && selectedRole) {
       localStorage.setItem("userRole", selectedRole.id);
       localStorage.setItem("onboardingComplete", "true");
-      navigate(`/environment/${selectedRole.id}`);
+      
+      // Navigate to supportee wizard for supportee role
+      if (selectedRole.id === "supportee") {
+        navigate("/supportee/onboarding");
+      } else {
+        navigate(`/environment/${selectedRole.id}`);
+      }
     }
   };
 
