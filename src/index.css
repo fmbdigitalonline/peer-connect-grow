@@ -9,20 +9,28 @@
 @layer base {
   :root {
     /* Brand Colors - Soft pastel palette for mobile-first */
-    --peer-purple: 260 60% 60%; /* Softer purple */
-    --peer-purple-dark: 259 55% 45%; /* Medium purple */
-    --peer-purple-light: 257 50% 75%; /* Light pastel purple */
-    --peer-magenta: 342 50% 65%; /* Soft magenta */
-    --peer-orange: 35 80% 65%; /* Warm pastel orange */
-    --peer-red: 353 55% 65%; /* Soft red */
-    --peer-green: 153 45% 55%; /* Soft green */
-    --peer-lime: 80 50% 70%; /* Pastel lime */
-    --peer-teal: 177 45% 60%; /* Soft teal */
-    --peer-navy: 234 38% 22%; /* Deep navy for contrast */
+    --peer-purple: 260 60% 60%;
+    --peer-purple-dark: 259 55% 45%;
+    --peer-purple-light: 257 50% 75%;
+    --peer-magenta: 342 50% 65%;
+    --peer-orange: 35 80% 65%;
+    --peer-red: 353 55% 65%;
+    --peer-green: 153 45% 55%;
+    --peer-lime: 80 50% 70%;
+    --peer-teal: 177 45% 60%;
+    --peer-navy: 234 38% 22%;
+    
+    /* Headspace-inspired pastels */
+    --headspace-peach: 24 100% 87%;
+    --headspace-pink: 340 100% 85%;
+    --headspace-lavender: 270 100% 92%;
+    --headspace-mint: 150 100% 92%;
+    --headspace-sky: 210 100% 92%;
+    --headspace-coral: 0 100% 85%;
     
     /* Core UI Colors */
-    --background: 0 0% 99%; /* Almost white */
-    --foreground: 0 0% 10%; /* Dark text */
+    --background: 0 0% 99%;
+    --foreground: 0 0% 10%;
     
     --card: 0 0% 100%;
     --card-foreground: 0 0% 16%;
@@ -36,8 +44,8 @@
     --secondary: var(--peer-orange);
     --secondary-foreground: 0 0% 100%;
     
-    --muted: 0 0% 96%; /* Light gray backgrounds */
-    --muted-foreground: 0 0% 42%; /* #6B6B6B */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 42%;
     
     --accent: var(--peer-teal);
     --accent-foreground: 0 0% 100%;
@@ -72,13 +80,14 @@
     --spacing-xl: 24px;
     --spacing-xxl: 32px;
     
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    /* Shadows - Headspace style */
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
     
     /* Animation */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .dark {
@@ -110,10 +119,14 @@
 
   body {
     @apply bg-background text-foreground font-nunito antialiased;
+    font-size: 18px;
+    line-height: 1.7;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold leading-tight;
+    @apply font-bold;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
   }
   
   h1 {
@@ -129,8 +142,11 @@
   }
   
   /* Mobile-optimized text size */
-  body {
-    @apply text-base md:text-lg; /* 16px mobile, 18px desktop */
+  @media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+    body { font-size: 18px; }
   }
 }
 

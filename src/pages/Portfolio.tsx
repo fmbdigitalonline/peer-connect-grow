@@ -1,189 +1,154 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Navigation } from "@/components/Navigation";
-import {
-  Award,
-  Download,
-  Calendar,
-  Target,
-  Sparkles,
-  Lock,
-  CheckCircle,
-} from "lucide-react";
+import { ProgressRing } from "@/components/ui/progress-ring";
+import { EmojiCard } from "@/components/ui/emoji-card";
+import { StatCarousel } from "@/components/ui/stat-carousel";
+import { OrganicShape } from "@/components/ui/organic-shape";
+import { BottomNav } from "@/components/BottomNav";
+import { Download, Sparkles, Lock } from "lucide-react";
 import { mockBadges, getLevelInfo } from "@/lib/mockSupporteeData";
-import { toast } from "sonner";
 
 const Portfolio = () => {
-  const navigate = useNavigate();
-  
-  const reflections = useMemo(() => {
-    return JSON.parse(localStorage.getItem("sessionReflections") || "[]");
+  const sessionReflections = useMemo(() => {
+    const stored = localStorage.getItem("sessionReflections");
+    return stored ? JSON.parse(stored) : [];
   }, []);
 
-  const totalXP = 65 + (reflections.length * 15);
+  const totalXP = sessionReflections.reduce((sum: number, r: any) => sum + (r.xpGained || 0), 0);
   const levelInfo = getLevelInfo(totalXP);
   
-  const earnedBadges = mockBadges.filter((b) => b.earned);
-  const lockedBadges = mockBadges.filter((b) => !b.earned);
+  const earnedBadges = mockBadges.filter(b => b.earned);
+  const lockedBadges = mockBadges.filter(b => !b.earned);
+  const latestBadge = earnedBadges[earnedBadges.length - 1];
+
+  const userData = useMemo(() => {
+    const stored = localStorage.getItem("userProfile");
+    return stored ? JSON.parse(stored) : { name: "Gebruiker" };
+  }, []);
+
+  const topSkills = [
+    { name: "Zelfreflectie", progress: 75, color: "from-green-400 to-emerald-500" },
+    { name: "Communicatie", progress: 60, color: "from-blue-400 to-cyan-500" },
+    { name: "Doorzettingsvermogen", progress: 45, color: "from-orange-400 to-amber-500" },
+  ];
+
+  const recentActivities = sessionReflections.slice(-5).reverse().map((r: any, i: number) => ({
+    id: i,
+    emoji: r.mood === 'happy' ? '😊' : r.mood === 'neutral' ? '😐' : '😔',
+    title: `Sessie voltooid`,
+    xp: r.xpGained || 15,
+  }));
+
+  const currentStreak = 7;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <Navigation />
-
-      <div className="bg-gradient-to-br from-primary to-primary/80 text-white px-6 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <p className="text-sm opacity-90 mb-1">Mijn Portfolio</p>
-              <h1 className="text-3xl font-bold">Lisa van der Berg</h1>
+    <div className="min-h-screen bg-background pb-20">
+      <div className="relative overflow-hidden">
+        <OrganicShape variant="blob1" className="top-0 right-0 w-64 h-64" color="hsl(var(--headspace-lavender))" />
+        <OrganicShape variant="blob2" className="bottom-0 left-0 w-48 h-48" color="hsl(var(--headspace-mint))" />
+        
+        <Card className="m-4 bg-gradient-to-br from-headspace-peach to-headspace-pink border-0 relative overflow-hidden">
+          <CardContent className="p-8 flex flex-col items-center text-center">
+            <div className="text-7xl mb-4 animate-bounce-in">👋</div>
+            <h1 className="text-2xl font-bold mb-2">Hi {userData.name}!</h1>
+            <Badge className="mb-4 text-base px-4 py-1 bg-white/80 text-foreground">
+              {levelInfo.title}
+            </Badge>
+            
+            <div className="relative mt-4">
+              <ProgressRing progress={levelInfo.progress} size={140} strokeWidth={10} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-3xl font-bold">{levelInfo.currentLevel}</div>
+                <div className="text-xs text-muted-foreground">Level</div>
+              </div>
             </div>
-            <div className="text-center bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4">
-              <p className="text-4xl mb-1">🥈</p>
-              <p className="font-bold text-lg">{levelInfo.level}</p>
-            </div>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-            <div className="flex items-center justify-between mb-2">
-              <p className="font-semibold">Voortgang</p>
-              <p className="font-bold">{Math.round((levelInfo.progress / levelInfo.nextLevel) * 100)}%</p>
-            </div>
-            <Progress 
-              value={(levelInfo.progress / levelInfo.nextLevel) * 100} 
-              className="h-3 bg-white/20"
-            />
-            <p className="text-xs opacity-90 mt-2">
-              {totalXP} XP • Nog {levelInfo.nextLevel - levelInfo.progress} XP
+            
+            <p className="text-sm text-foreground/70 mt-4">
+              {totalXP} / {levelInfo.nextLevel} XP
             </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="px-6 -mt-6 mb-6">
-        <div className="max-w-4xl mx-auto grid grid-cols-4 gap-3">
-          {[
-            { label: "Sessies", value: reflections.length, icon: Calendar },
-            { label: "Badges", value: earnedBadges.length, icon: Award },
-            { label: "XP", value: totalXP, icon: Sparkles },
-            { label: "Streak", value: "14d", icon: CheckCircle },
-          ].map((stat) => (
-            <Card key={stat.label} className="p-4 text-center">
-              <stat.icon className="h-5 w-5 mx-auto mb-1 text-primary" />
-              <p className="text-2xl font-bold">{stat.value}</p>
-              <p className="text-xs text-muted-foreground">{stat.label}</p>
-            </Card>
+      <div className="px-4 mb-6">
+        <StatCarousel>
+          <EmojiCard emoji="📅" title="Sessies" value={sessionReflections.length} gradient="from-headspace-sky to-headspace-lavender" className="snap-start" />
+          <EmojiCard emoji="🏆" title="Badges" value={earnedBadges.length} gradient="from-headspace-mint to-headspace-sky" className="snap-start" />
+          <EmojiCard emoji="⚡" title="XP" value={totalXP} gradient="from-headspace-peach to-headspace-coral" className="snap-start" />
+          <EmojiCard emoji="🔥" title="Streak" value={currentStreak} subtitle="dagen" gradient="from-headspace-coral to-headspace-pink" className="snap-start" />
+        </StatCarousel>
+      </div>
+
+      {latestBadge && (
+        <Card className="mx-4 mb-6 bg-gradient-to-br from-headspace-lavender to-headspace-pink border-0 relative overflow-hidden">
+          <OrganicShape variant="blob3" className="top-0 right-0 w-32 h-32" color="hsl(var(--headspace-sky))" />
+          <CardContent className="p-8 text-center relative">
+            <Sparkles className="w-6 h-6 text-yellow-500 mx-auto mb-2 animate-bounce-in" />
+            <p className="text-sm font-semibold text-foreground/70 mb-3">Je nieuwste badge!</p>
+            <div className="text-8xl mb-3 animate-bounce-in">{latestBadge.icon}</div>
+            <h3 className="text-xl font-bold mb-2">{latestBadge.name}</h3>
+            <p className="text-sm text-foreground/70 mb-4">{latestBadge.description}</p>
+            <Button variant="outline" className="rounded-full">Bekijk alle badges →</Button>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="px-4 mb-6">
+        <h2 className="text-xl font-bold mb-4">Mijn Badges</h2>
+        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
+          {earnedBadges.map((badge) => (
+            <div key={badge.id} className="snap-start shrink-0">
+              <Card className="w-24 h-24 flex items-center justify-center bg-gradient-to-br from-headspace-mint to-headspace-sky border-0">
+                <div className="text-5xl">{badge.icon}</div>
+              </Card>
+            </div>
+          ))}
+          {lockedBadges.slice(0, 3).map((badge) => (
+            <div key={badge.id} className="snap-start shrink-0 relative">
+              <Card className="w-24 h-24 flex items-center justify-center bg-muted/30 border-0 grayscale">
+                <div className="text-5xl opacity-40">{badge.icon}</div>
+                <Lock className="absolute w-6 h-6 text-muted-foreground" />
+              </Card>
+            </div>
           ))}
         </div>
       </div>
 
-      <div className="px-6 max-w-4xl mx-auto space-y-6">
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Award className="h-5 w-5 text-primary" />
-              Mijn Badges
-            </h2>
-            <Badge>{earnedBadges.length}/{mockBadges.length}</Badge>
+      <Card className="mx-4 mb-6 border-0">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="text-5xl">🎯</div>
+            <CardTitle className="text-xl">Je top skills</CardTitle>
           </div>
-
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4 mb-6">
-            {earnedBadges.map((badge) => (
-              <div key={badge.id} className="text-center">
-                <div className="text-5xl mb-2">{badge.icon}</div>
-                <p className="text-xs font-semibold">{badge.name}</p>
-                <p className="text-xs text-green-600 mt-1">
-                  <CheckCircle className="h-3 w-3 inline mr-1" />
-                  Verdiend
-                </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {topSkills.map((skill) => (
+            <div key={skill.name}>
+              <div className="flex justify-between mb-2">
+                <span className="font-semibold text-sm">{skill.name}</span>
+                <span className="text-sm font-bold text-primary">{skill.progress}%</span>
               </div>
-            ))}
-          </div>
-
-          <div className="border-t pt-4">
-            <h3 className="font-semibold mb-3 text-sm text-muted-foreground">Op slot</h3>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
-              {lockedBadges.map((badge) => (
-                <div key={badge.id} className="text-center opacity-50">
-                  <div className="relative">
-                    <div className="text-5xl mb-2 grayscale">{badge.icon}</div>
-                    <Lock className="h-4 w-4 absolute top-0 right-0" />
-                  </div>
-                  <p className="text-xs font-semibold">{badge.name}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            Future Skills
-          </h2>
-
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { name: "Communicatie", value: 75 },
-              { name: "Samenwerken", value: 85 },
-              { name: "Eigenaarschap", value: 60 },
-              { name: "Doorzetten", value: 70 },
-              { name: "Creativiteit", value: 55 },
-              { name: "Reflecteren", value: 80 },
-            ].map((skill) => (
-              <div key={skill.name}>
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-semibold">{skill.name}</p>
-                  <Badge variant="outline" className="text-xs">{skill.value}%</Badge>
-                </div>
-                <Progress value={skill.value} className="h-2" />
+              <div className="h-3 bg-muted rounded-full overflow-hidden">
+                <div className={`h-full bg-gradient-to-r ${skill.color} transition-all duration-1000 ease-out rounded-full`} style={{ width: `${skill.progress}%` }} />
               </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-primary" />
-            Sessie Timeline
-          </h2>
-
-          {reflections.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">Nog geen sessies voltooid</p>
-              <Button onClick={() => navigate("/sessions")}>
-                Plan je eerste sessie
-              </Button>
             </div>
-          ) : (
-            <div className="space-y-4">
-              {reflections.slice(0, 5).map((ref: any, idx: number) => (
-                <div key={idx} className="flex gap-4 border-l-4 border-l-primary pl-4">
-                  <div className="text-3xl">{ref.postMood}</div>
-                  <div className="flex-1">
-                    <p className="font-semibold">Sessie {idx + 1}</p>
-                    <p className="text-sm text-muted-foreground">{ref.preGoal}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-primary">+15 XP</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </Card>
+          ))}
+        </CardContent>
+      </Card>
 
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4">Portfolio delen</h2>
-          <Button variant="outline" onClick={() => toast.success("Download gestart!")} className="gap-2">
-            <Download className="h-4 w-4" />
-            Download PDF
-          </Button>
-        </Card>
-      </div>
+      <Card className="mx-4 mb-6 bg-gradient-to-br from-headspace-pink to-headspace-lavender border-0 relative overflow-hidden">
+        <OrganicShape variant="blob1" className="top-0 right-0 w-40 h-40" color="hsl(var(--headspace-coral))" />
+        <CardContent className="p-8 text-center relative">
+          <div className="text-6xl mb-4">🎉</div>
+          <h3 className="text-xl font-bold mb-2">Deel je portfolio</h3>
+          <p className="text-sm text-foreground/70 mb-4">Laat anderen zien hoe ver je bent gekomen!</p>
+          <Button size="lg" className="rounded-full gap-2"><Download className="w-5 h-5" />Download portfolio</Button>
+        </CardContent>
+      </Card>
+
+      <BottomNav />
     </div>
   );
 };
