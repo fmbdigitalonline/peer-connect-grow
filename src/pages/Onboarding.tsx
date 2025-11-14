@@ -45,7 +45,6 @@ const Onboarding = () => {
     localStorage.setItem("userRole", currentRole.id);
     localStorage.setItem("onboardingComplete", "true");
     
-    // Navigate to specific onboarding flows
     if (currentRole.id === "supportee") {
       navigate("/supportee/onboarding");
     } else if (currentRole.id === "buddy") {
@@ -87,7 +86,7 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-headspace-mint via-headspace-sky to-headspace-lavender flex flex-col">
       {/* Minimal Header */}
       <div className="py-6 px-6">
         <div className="flex justify-center">
@@ -104,58 +103,52 @@ const Onboarding = () => {
           onTouchEnd={onTouchEnd}
         >
           {/* Role Card */}
-          <div className="bg-card rounded-3xl shadow-2xl p-8 mb-8 animate-fade-in">
+          <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-8 animate-fade-in border-0">
             {/* Large Icon/Emoji */}
             <div className="flex justify-center mb-6">
               <div className={cn(
-                "w-24 h-24 rounded-full flex items-center justify-center shadow-lg",
+                "w-28 h-28 rounded-full flex items-center justify-center shadow-lg",
                 currentRole.badge
               )}>
-                <currentRole.icon className="w-12 h-12 text-white" />
+                <currentRole.icon className="w-16 h-16 text-white" />
               </div>
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl font-extrabold text-center mb-3 text-foreground">
-              {currentRole.title}
-            </h1>
-
-            {/* Single Line Description */}
-            <p className="text-lg text-center text-muted-foreground mb-8 leading-relaxed">
+            <h2 className="text-3xl font-bold text-center mb-4">{currentRole.title}</h2>
+            
+            {/* Description */}
+            <p className="text-center text-muted-foreground mb-8">
               {currentRole.description}
             </p>
 
-            {/* CTA Button */}
+            {/* Action Button */}
             <Button 
-              size="lg" 
-              className="w-full h-14 text-lg rounded-full shadow-lg"
               onClick={handleSelectRole}
+              size="lg"
+              className="w-full h-16 rounded-3xl shadow-lg text-lg font-bold bg-gradient-to-r from-headspace-peach to-headspace-pink hover:scale-105 active:scale-95 transition-transform"
             >
-              Start als {currentRole.title}
-              <ArrowRight className="ml-2 h-5 w-5" />
+              Word {currentRole.title}
+              <ArrowRight className="ml-2" />
             </Button>
           </div>
 
-          {/* Dots Indicator */}
-          <div className="flex justify-center gap-2 mb-4">
-            {roleList.map((_, index) => (
+          {/* Navigation Dots */}
+          <div className="flex justify-center gap-2">
+            {roleList.map((role, index) => (
               <button
-                key={index}
+                key={role.id}
                 onClick={() => setCurrentRoleIndex(index)}
                 className={cn(
                   "h-2 rounded-full transition-all",
-                  index === currentRoleIndex 
-                    ? "w-8 bg-primary" 
-                    : "w-2 bg-muted"
+                  index === currentRoleIndex
+                    ? "w-8 bg-white"
+                    : "w-2 bg-white/40"
                 )}
+                aria-label={`Go to ${role.title}`}
               />
             ))}
           </div>
-
-          {/* Swipe Hint */}
-          <p className="text-center text-sm text-muted-foreground">
-            👈 Swipe om andere rollen te zien 👉
-          </p>
         </div>
       </div>
     </div>
