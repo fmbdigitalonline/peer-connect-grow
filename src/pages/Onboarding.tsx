@@ -39,9 +39,11 @@ const Onboarding = () => {
       localStorage.setItem("userRole", selectedRole.id);
       localStorage.setItem("onboardingComplete", "true");
       
-      // Navigate to supportee wizard for supportee role
+      // Navigate to specific onboarding flows
       if (selectedRole.id === "supportee") {
         navigate("/supportee/onboarding");
+      } else if (selectedRole.id === "buddy") {
+        navigate("/buddy/onboarding");
       } else {
         navigate(`/environment/${selectedRole.id}`);
       }
