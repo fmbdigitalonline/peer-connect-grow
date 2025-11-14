@@ -15,6 +15,9 @@ export const mockSupporteeProfile: SupporteeProfile = {
   privacyConsent: true,
   completedAt: new Date("2024-11-01"),
   currentStep: 5,
+  xp: 145,
+  sessionsCompleted: 3,
+  status: "active",
 };
 
 export const mockBadges: Badge[] = [
