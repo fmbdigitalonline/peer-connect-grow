@@ -194,7 +194,7 @@ const userFlows = [
 
 const SupporteeJourney = () => {
   const navigate = useNavigate();
-  const [activeStepId, setActiveStepId] = useState(journeySteps[0].id);
+  const [activeStepId, setActiveStepId] = useState<typeof journeySteps[number]["id"]>(journeySteps[0].id);
 
   const activeStep = useMemo(
     () => journeySteps.find((step) => step.id === activeStepId) ?? journeySteps[0],
@@ -327,7 +327,7 @@ const SupporteeJourney = () => {
                   {activeStep.ctas.map((cta) => (
                     <Button
                       key={cta.label}
-                      variant={cta.variant ?? "default"}
+                      variant={"variant" in cta ? cta.variant : "default"}
                       onClick={() => navigate(cta.route)}
                     >
                       {cta.label}

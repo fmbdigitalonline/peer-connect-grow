@@ -1,0 +1,40 @@
+import { BuddyProfile } from "@/types/supportee";
+
+export const mockBuddies: BuddyProfile[] = [
+  {
+    id: "buddy-1",
+    name: "Sophie de Vries",
+    class: "4B",
+    level: "Leader",
+    avatar: "👩‍🎓",
+    expertise: ["Wiskunde", "Presenteren", "Plannen"],
+    availability: ["Ma 15:00", "Wo 14:00", "Do 16:00"],
+    matchScore: 92,
+    bio: "Ik help graag met wiskunde en presentaties. Zelf vind ik het super leuk om anderen te ondersteunen!",
+    sessionsCompleted: 18,
+  },
+  {
+    id: "buddy-2",
+    name: "Tom Jansen",
+    class: "5A",
+    level: "Expert",
+    avatar: "👨‍💼",
+    expertise: ["Nederlands", "Time management", "Motivatie"],
+    availability: ["Di 14:00", "Wo 15:30", "Vr 14:00"],
+    matchScore: 87,
+    bio: "Expert in plannen en motivatie. Ik kan je helpen om je doelen te bereiken!",
+    sessionsCompleted: 34,
+  },
+  {
+    id: "buddy-3",
+    name: "Maya Bakker",
+    class: "4A",
+    level: "Practitioner",
+    avatar: "👩‍🏫",
+    expertise: ["Engels", "Creatief denken", "Samenwerken"],
+    availability: ["Ma 16:00", "Do 15:00"],
+    matchScore: 78,
+    bio: "Nieuw als buddy maar super enthousiast! Ik help graag met Engels en creatieve opdrachten.",
+    sessionsCompleted: 6,
+  },
+];
