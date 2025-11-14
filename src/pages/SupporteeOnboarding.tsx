@@ -9,6 +9,7 @@ import { WizardProgress } from "@/components/WizardProgress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ArrowRight, Check, Globe, GraduationCap, Target, Shield, Sparkles } from "lucide-react";
 import { SupporteeProfile } from "@/types/supportee";
+import { toast } from "sonner";
 import peerLogo from "@/assets/peer-logo.png";
 
 const TOTAL_STEPS = 5;
@@ -38,9 +39,13 @@ const SupporteeOnboarding = () => {
         ...profile as any,
         completedAt: new Date(),
         currentStep: TOTAL_STEPS,
+        xp: 0,
+        sessionsCompleted: 0,
+        status: "active",
       };
       localStorage.setItem("supporteeProfile", JSON.stringify(completedProfile));
-      navigate("/help-request");
+      toast.success("Profiel voltooid! Welkom bij Peer2Peer 🎉");
+      navigate("/supportee/hub");
     }
   };
 

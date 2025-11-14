@@ -13,6 +13,9 @@ export interface SupporteeProfile {
   privacyConsent: boolean;
   completedAt?: Date;
   currentStep: number;
+  xp: number;
+  sessionsCompleted: number;
+  status: 'active' | 'inactive' | 'paused';
 }
 
 export interface BuddyProfile {

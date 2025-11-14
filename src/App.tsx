@@ -16,6 +16,7 @@ import CoachDashboard from "./pages/CoachDashboard";
 import RoleEnvironment from "./pages/RoleEnvironment";
 import SupporteeJourney from "./pages/SupporteeJourney";
 import SupporteeOnboarding from "./pages/SupporteeOnboarding";
+import SupporteeHub from "./pages/SupporteeHub";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/supportee/onboarding" element={<SupporteeOnboarding />} />
           <Route path="/supportee/journey" element={<SupporteeJourney />} />
+          <Route path="/supportee/hub" element={<SupporteeHub />} />
           <Route path="/help-request" element={<HelpRequest />} />
           <Route path="/matches" element={<Matches />} />
           <Route path="/sessions" element={<Sessions />} />
