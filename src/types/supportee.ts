@@ -61,15 +61,13 @@ export interface CommunityPost {
   id: string;
   authorId: string;
   authorName: string;
-  authorAvatar: string;
   authorLevel: string;
   type: 'achievement' | 'story' | 'question';
   content: string;
   badge?: string;
   reactions: { type: string; count: number }[];
-  comments: { authorName: string; content: string; timestamp: Date; authorAvatar?: string }[];
+  comments: { authorName: string; content: string; timestamp: Date }[];
   timestamp: Date;
-  date: string;
   isSpotlighted: boolean;
   privacy: 'school' | 'platform';
 }

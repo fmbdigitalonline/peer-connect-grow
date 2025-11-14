@@ -1,68 +1,101 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Navigation } from "@/components/Navigation";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BottomNav } from "@/components/BottomNav";
-import { ArrowLeft, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { mockLibraryItems } from "@/lib/mockSupporteeData";
+import { Star, Clock, Users, Play } from "lucide-react";
 
 const Library = () => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
-  if (selectedItem) {
-    const item = mockLibraryItems.find(i => i.id === selectedItem);
-    if (!item) return null;
-
-    return (
-      <div className="min-h-screen bg-background pb-20">
-        <div className="p-4">
-          <Button variant="ghost" onClick={() => setSelectedItem(null)} className="mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />Terug
-          </Button>
-          <Card className="border-0 overflow-hidden mb-6">
-            <div className="aspect-video bg-muted flex items-center justify-center relative">
-              <Play className="w-16 h-16 text-primary" />
-            </div>
-          </Card>
-          <div className="space-y-6">
-            <div>
-              <Badge className="mb-2">{item.category}</Badge>
-              <h1 className="text-3xl font-bold mb-2">{item.title}</h1>
-              <p className="text-foreground/70">{item.description}</p>
-            </div>
-            <div className="flex gap-3">
-              <Button size="lg" className="flex-1 rounded-full">Start</Button>
-            </div>
-          </div>
-        </div>
-        <BottomNav />
-      </div>
-    );
-  }
-
-  const item = mockLibraryItems[currentIndex];
-  const gradients = ["from-headspace-peach to-headspace-pink", "from-headspace-sky to-headspace-lavender", "from-headspace-mint to-headspace-sky"];
+  const selectedLibraryItem = mockLibraryItems.find((item) => item.id === selectedItem);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="h-screen snap-y snap-mandatory overflow-y-scroll scrollbar-hide">
-        <div className="snap-start h-[90vh] mx-4 my-8">
-          <Card className={`h-full border-0 bg-gradient-to-br ${gradients[currentIndex % gradients.length]} cursor-pointer`} onClick={() => setSelectedItem(item.id)}>
-            <Badge className="absolute top-6 right-6 z-10 bg-white/80 text-foreground">{item.category}</Badge>
-            <CardContent className="h-full flex flex-col items-center justify-between p-8">
-              <div className="flex-1 flex items-center justify-center">
-                <div className="text-9xl animate-bounce-in">{item.thumbnail}</div>
+    <div className="min-h-screen bg-background pb-24">
+      <Navigation />
+
+      <div className="bg-card border-b px-6 py-4">
+        <h1 className="text-xl font-bold">Bibliotheek</h1>
+        <p className="text-sm text-muted-foreground">Microlearning op jouw niveau</p>
+      </div>
+
+      {selectedItem && selectedLibraryItem ? (
+        <div className="px-6 py-6 max-w-4xl mx-auto">
+          <Button variant="ghost" onClick={() => setSelectedItem(null)} className="mb-4">
+            ← Terug
+          </Button>
+
+          <Card className="p-6">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="text-6xl">{selectedLibraryItem.thumbnail}</div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold mb-2">{selectedLibraryItem.title}</h2>
+                <p className="text-muted-foreground mb-3">{selectedLibraryItem.description}</p>
+                <div className="flex gap-2">
+                  <Badge>{selectedLibraryItem.category}</Badge>
+                  <Badge variant="outline">{selectedLibraryItem.duration}</Badge>
+                </div>
               </div>
-              <div className="text-center space-y-4">
-                <h2 className="text-3xl font-bold leading-tight max-w-md">{item.title}</h2>
-                <p className="text-sm text-foreground/80 animate-pulse">Tap om te starten ↑</p>
+            </div>
+
+            <div className="bg-muted rounded-lg aspect-video flex items-center justify-center mb-6">
+              <div className="text-center">
+                <Play className="h-16 w-16 mx-auto mb-2 text-primary" />
+                <p className="text-sm">Video placeholder</p>
               </div>
-            </CardContent>
+            </div>
+
+            <div>
+              <h3 className="font-bold mb-3">Stappen</h3>
+              <ol className="space-y-2">
+                {selectedLibraryItem.instructions.map((instruction, idx) => (
+                  <li key={idx} className="flex gap-3">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+                      {idx + 1}
+                    </div>
+                    <p className="text-sm pt-1">{instruction}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </Card>
         </div>
-      </div>
-      <BottomNav />
+      ) : (
+        <div className="px-6 py-6">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {mockLibraryItems.map((item) => (
+              <Card
+                key={item.id}
+                className="p-5 cursor-pointer hover:shadow-lg transition"
+                onClick={() => setSelectedItem(item.id)}
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="text-5xl">{item.thumbnail}</div>
+                  <div className="flex-1">
+                    <h3 className="font-bold mb-1">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Badge variant="outline">{item.category}</Badge>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {item.duration}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                      {item.rating}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
