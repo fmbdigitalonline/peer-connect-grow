@@ -24,20 +24,20 @@ export const EmojiCard = ({
     <Card
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center justify-center p-6 bg-gradient-to-br transition-transform active:scale-95 cursor-pointer min-w-[120px] min-h-[140px]",
+        "flex flex-col items-center justify-center p-5 bg-gradient-to-br transition-transform active:scale-95 cursor-pointer border-0",
         gradient,
         className
       )}
     >
-      <div className="text-6xl mb-2 animate-bounce-in">{emoji}</div>
+      <div className="text-4xl mb-2">{emoji}</div>
       {value !== undefined && (
-        <div className="text-3xl font-bold text-foreground">{value}</div>
+        <div className="text-2xl font-bold text-foreground">{value}</div>
       )}
       {title && (
-        <div className="text-sm font-semibold text-foreground/80 mt-1">{title}</div>
+        <div className="text-sm font-semibold text-foreground/90 mt-1">{title}</div>
       )}
       {subtitle && (
-        <div className="text-xs text-foreground/60 mt-0.5">{subtitle}</div>
+        <div className="text-xs text-foreground/70 mt-0.5">{subtitle}</div>
       )}
     </Card>
   );
