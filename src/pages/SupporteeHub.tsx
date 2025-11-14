@@ -1,168 +1,146 @@
-import { Navigation } from "@/components/Navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { MessageSquare, Users, Calendar, BookOpen, Award, TrendingUp } from "lucide-react";
 import { mockSupporteeProfile, getLevelInfo } from "@/lib/mockSupporteeData";
+import { BottomNav } from "@/components/BottomNav";
+import { Progress } from "@/components/ui/progress";
+import { Zap } from "lucide-react";
 
 const SupporteeHub = () => {
   const navigate = useNavigate();
   const levelInfo = getLevelInfo(mockSupporteeProfile.xp);
+  const progressToNextLevel = levelInfo.nextLevel > 0 ? (levelInfo.progress / levelInfo.nextLevel) * 100 : 100;
 
   const quickActions = [
     {
       id: 1,
-      title: "Dien je eerste hulpvraag in",
-      description: "Vertel waar je hulp bij nodig hebt",
-      icon: MessageSquare,
+      title: "Dien hulpvraag in",
+      emoji: "🆘",
       path: "/help-request",
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10"
+      gradient: "from-blue-500 to-purple-500"
     },
     {
       id: 2,
-      title: "Bekijk buddy matches",
-      description: "Ontdek wie jou kan helpen",
-      icon: Users,
+      title: "Vind een buddy",
+      emoji: "🤝",
       path: "/matches",
-      color: "text-green-500",
-      bgColor: "bg-green-500/10"
+      gradient: "from-green-500 to-teal-500"
     },
     {
       id: 3,
-      title: "Plan je eerste sessie",
-      description: "Maak een afspraak met je buddy",
-      icon: Calendar,
+      title: "Plan een sessie",
+      emoji: "📅",
       path: "/sessions",
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10"
-    }
-  ];
-
-  const exploreCards = [
-    {
-      title: "Bibliotheek",
-      description: "Leer nieuwe vaardigheden",
-      icon: BookOpen,
-      path: "/library",
-      stats: "50+ hulpmiddelen"
-    },
-    {
-      title: "Portfolio",
-      description: "Bekijk je groei",
-      icon: Award,
-      path: "/portfolio",
-      stats: `Level ${levelInfo.level}`
-    },
-    {
-      title: "Community",
-      description: "Deel je successen",
-      icon: TrendingUp,
-      path: "/community",
-      stats: "15+ verhalen"
+      gradient: "from-orange-500 to-red-500"
     }
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      <div className="px-6 py-8 max-w-4xl mx-auto">
-        {/* Welcome Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">
-            Welkom, {mockSupporteeProfile.personalInfo.name}! 🎉
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 pb-20">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-primary to-primary-foreground text-white px-6 py-12 rounded-b-[2rem] shadow-xl">
+        <div className="max-w-md mx-auto">
+          <p className="text-sm opacity-80 mb-2">Welkom terug!</p>
+          <h1 className="text-4xl font-extrabold mb-8">
+            Hi {mockSupporteeProfile.personalInfo.name}! 👋
           </h1>
-          <p className="text-muted-foreground">
-            Klaar om te starten met Peer2Peer? Begin met één van deze stappen.
-          </p>
-        </div>
-
-        {/* Quick Stats */}
-        <Card className="p-6 mb-8 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Jouw Level</p>
-              <p className="text-2xl font-bold">{levelInfo.level}</p>
+          
+          {/* Level Circle */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm opacity-80">Jouw Level</p>
+                <p className="text-3xl font-bold">{levelInfo.level}</p>
+              </div>
+              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-4xl backdrop-blur">
+                🏆
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">XP</p>
-              <p className="text-2xl font-bold">{mockSupporteeProfile.xp}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Sessies</p>
-              <p className="text-2xl font-bold">{mockSupporteeProfile.sessionsCompleted}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Status</p>
-              <Badge variant="secondary">{mockSupporteeProfile.status}</Badge>
-            </div>
+            <Progress value={progressToNextLevel} className="h-2 mb-2" />
+            <p className="text-xs opacity-80">
+              {Math.round(levelInfo.progress)} / {levelInfo.nextLevel} XP tot volgend level
+            </p>
           </div>
-        </Card>
-
-        {/* Next Steps */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Volgende stappen:</h2>
-          <div className="space-y-4">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-              return (
-                <Card 
-                  key={action.id} 
-                  className="p-6 hover:border-primary/50 transition-colors cursor-pointer"
-                  onClick={() => navigate(action.path)}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`flex h-12 w-12 items-center justify-center rounded-full ${action.bgColor}`}>
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 ${action.color} font-bold text-lg`}>
-                        {action.id}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold mb-1">{action.title}</h3>
-                      <p className="text-sm text-muted-foreground">{action.description}</p>
-                    </div>
-                    <Icon className={`h-6 w-6 ${action.color}`} />
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Explore More */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">Verken meer:</h2>
-          <div className="grid md:grid-cols-3 gap-4">
-            {exploreCards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <Card 
-                  key={card.title}
-                  className="p-6 hover:border-primary/50 transition-colors cursor-pointer"
-                  onClick={() => navigate(card.path)}
-                >
-                  <Icon className="h-8 w-8 mb-4 text-primary" />
-                  <h3 className="font-semibold mb-2">{card.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-3">{card.description}</p>
-                  <p className="text-xs font-medium text-primary">{card.stats}</p>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Primary CTA */}
-        <div className="mt-8 text-center">
-          <Button 
-            size="lg" 
-            onClick={() => navigate("/help-request")}
-            className="font-semibold"
-          >
-            Start met Peer2Peer
-          </Button>
         </div>
       </div>
+
+      {/* Main Content */}
+      <div className="px-6 py-8 max-w-md mx-auto">
+        {/* Daily Goal */}
+        <Card className="p-6 mb-6 bg-gradient-to-r from-accent/10 to-accent/5 border-accent/20">
+          <div className="flex items-center gap-3 mb-3">
+            <Zap className="h-6 w-6 text-accent" />
+            <h2 className="text-lg font-bold">Vandaag doel</h2>
+          </div>
+          <p className="text-muted-foreground mb-4">Plan je eerste sessie met een buddy</p>
+          <Button className="w-full rounded-full" onClick={() => navigate("/sessions")}>
+            Start nu
+          </Button>
+        </Card>
+
+        {/* Quick Actions */}
+        <h2 className="text-xl font-bold mb-4">Snelle acties</h2>
+        <div className="space-y-4 mb-8">
+          {quickActions.map((action) => (
+            <Card
+              key={action.id}
+              className="overflow-hidden cursor-pointer transition-transform active:scale-95"
+              onClick={() => navigate(action.path)}
+            >
+              <div className={`h-2 bg-gradient-to-r ${action.gradient}`} />
+              <div className="p-6 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="text-5xl">{action.emoji}</div>
+                  <h3 className="text-lg font-bold">{action.title}</h3>
+                </div>
+                <div className="text-muted-foreground">→</div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Explore Section */}
+        <h2 className="text-xl font-bold mb-4">Ontdekken</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <Card 
+            className="p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => navigate("/library")}
+          >
+            <div className="text-4xl mb-3">📚</div>
+            <h3 className="font-bold mb-1">Bibliotheek</h3>
+            <p className="text-xs text-muted-foreground">50+ hulpmiddelen</p>
+          </Card>
+          
+          <Card 
+            className="p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => navigate("/portfolio")}
+          >
+            <div className="text-4xl mb-3">🏅</div>
+            <h3 className="font-bold mb-1">Portfolio</h3>
+            <p className="text-xs text-muted-foreground">Je prestaties</p>
+          </Card>
+          
+          <Card 
+            className="p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => navigate("/community")}
+          >
+            <div className="text-4xl mb-3">💬</div>
+            <h3 className="font-bold mb-1">Community</h3>
+            <p className="text-xs text-muted-foreground">15+ verhalen</p>
+          </Card>
+          
+          <Card 
+            className="p-6 text-center cursor-pointer hover:shadow-lg transition-all"
+            onClick={() => navigate("/supportee/journey")}
+          >
+            <div className="text-4xl mb-3">🗺️</div>
+            <h3 className="font-bold mb-1">Journey</h3>
+            <p className="text-xs text-muted-foreground">Jouw pad</p>
+          </Card>
+        </div>
+      </div>
+
+      <BottomNav />
     </div>
   );
 };
