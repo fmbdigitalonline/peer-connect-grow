@@ -14,29 +14,29 @@ const SupporteeHub = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-headspace-mint via-headspace-sky to-headspace-lavender pb-20">
-      {/* Hero Section - Portfolio Style */}
-      <Card className="m-4 bg-gradient-to-br from-headspace-peach to-headspace-pink border-0">
-        <CardContent className="p-8 flex flex-col items-center text-center">
-          <div className="text-7xl mb-4 animate-bounce-in">👋</div>
-          <h1 className="text-2xl font-bold mb-2">Hi {personalInfo.name}!</h1>
-          <Badge className="bg-white/20 text-foreground border-0 backdrop-blur-sm">
+      {/* Hero Section */}
+      <Card className="mx-4 mt-4 mb-5 bg-gradient-to-br from-headspace-peach to-headspace-pink border-0">
+        <CardContent className="p-6 flex flex-col items-center text-center">
+          <div className="text-5xl mb-3">👋</div>
+          <h1 className="text-xl font-bold mb-2">Hi {personalInfo.name}!</h1>
+          <Badge className="bg-white/20 text-foreground border-0 backdrop-blur-sm text-xs">
             {levelInfo.title}
           </Badge>
           
-          <div className="relative mt-6">
-            <ProgressRing progress={progressToNextLevel} size={140} />
+          <div className="relative mt-5">
+            <ProgressRing progress={progressToNextLevel} size={120} strokeWidth={6} />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-3xl font-bold">{levelInfo.currentLevel}</div>
+              <div className="text-2xl font-bold">{levelInfo.currentLevel}</div>
               <div className="text-xs opacity-80">Level</div>
             </div>
           </div>
           
-          <p className="text-sm mt-4 opacity-90">{xp} / {levelInfo.nextLevel} XP</p>
+          <p className="text-sm mt-3 opacity-90">{xp} / {levelInfo.nextLevel} XP</p>
         </CardContent>
       </Card>
 
-      {/* Quick Actions - EmojiCards */}
-      <div className="px-4 space-y-3 mb-8">
+      {/* Quick Actions */}
+      <div className="px-4 space-y-3 mb-6">
         <EmojiCard 
           emoji="🆘" 
           title="Hulpvraag"
@@ -62,38 +62,38 @@ const SupporteeHub = () => {
 
       {/* Explore Section */}
       <div className="px-4">
-        <h2 className="text-xl font-bold mb-4">Ontdekken</h2>
+        <h2 className="text-lg font-bold mb-3 px-1">Ontdekken</h2>
         <div className="grid grid-cols-2 gap-3">
           <Card 
-            className="p-6 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-lavender/30 to-headspace-pink/30 border-0"
+            className="p-5 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-lavender/30 to-headspace-pink/30 border-0"
             onClick={() => navigate("/library")}
           >
-            <div className="text-5xl mb-3 animate-float">📚</div>
-            <h3 className="font-semibold">Library</h3>
+            <div className="text-4xl mb-2">📚</div>
+            <h3 className="font-semibold text-sm">Library</h3>
           </Card>
           
           <Card 
-            className="p-6 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-mint/30 to-headspace-sky/30 border-0"
+            className="p-5 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-mint/30 to-headspace-sky/30 border-0"
             onClick={() => navigate("/portfolio")}
           >
-            <div className="text-5xl mb-3 animate-float">🎯</div>
-            <h3 className="font-semibold">Portfolio</h3>
+            <div className="text-4xl mb-2">🎯</div>
+            <h3 className="font-semibold text-sm">Portfolio</h3>
           </Card>
           
           <Card 
-            className="p-6 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-peach/30 to-headspace-coral/30 border-0"
+            className="p-5 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-peach/30 to-headspace-coral/30 border-0"
             onClick={() => navigate("/community")}
           >
-            <div className="text-5xl mb-3 animate-float">🌟</div>
-            <h3 className="font-semibold">Community</h3>
+            <div className="text-4xl mb-2">🌟</div>
+            <h3 className="font-semibold text-sm">Community</h3>
           </Card>
           
           <Card 
-            className="p-6 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-sky/30 to-headspace-lavender/30 border-0"
+            className="p-5 cursor-pointer transition-transform active:scale-95 bg-gradient-to-br from-headspace-sky/30 to-headspace-lavender/30 border-0"
             onClick={() => navigate("/supportee/journey")}
           >
-            <div className="text-5xl mb-3 animate-float">🚀</div>
-            <h3 className="font-semibold">Journey</h3>
+            <div className="text-4xl mb-2">🚀</div>
+            <h3 className="font-semibold text-sm">Journey</h3>
           </Card>
         </div>
       </div>
