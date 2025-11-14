@@ -74,6 +74,14 @@ export default {
           teal: "hsl(var(--peer-teal))",
           navy: "hsl(var(--peer-navy))",
         },
+        headspace: {
+          peach: "hsl(var(--headspace-peach))",
+          pink: "hsl(var(--headspace-pink))",
+          lavender: "hsl(var(--headspace-lavender))",
+          mint: "hsl(var(--headspace-mint))",
+          sky: "hsl(var(--headspace-sky))",
+          coral: "hsl(var(--headspace-coral))",
+        },
       },
       borderRadius: {
         lg: "var(--radius-lg)",

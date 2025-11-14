@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, Plus } from "lucide-react";
-import { Navigation } from "@/components/Navigation";
+import { BottomNav } from "@/components/BottomNav";
+import { Calendar, Clock, Users } from "lucide-react";
 import { getStorageData } from "@/lib/mockData";
 import type { Session } from "@/types";
+import { format } from "date-fns";
+import { nl } from "date-fns/locale";
 
 const Sessions = () => {
   const navigate = useNavigate();
@@ -14,157 +16,47 @@ const Sessions = () => {
 
   useEffect(() => {
     const storedSessions = getStorageData<Session[]>("sessions", []);
-    // Convert date strings back to Date objects
-    const parsedSessions = storedSessions.map((s) => ({
-      ...s,
-      scheduledStart: new Date(s.scheduledStart),
-      scheduledEnd: new Date(s.scheduledEnd),
-      actualStart: s.actualStart ? new Date(s.actualStart) : undefined,
-      actualEnd: s.actualEnd ? new Date(s.actualEnd) : undefined,
-    }));
+    const parsedSessions = storedSessions.map((s) => ({ ...s, scheduledStart: new Date(s.scheduledStart), scheduledEnd: new Date(s.scheduledEnd) }));
     setSessions(parsedSessions);
   }, []);
 
-  const getStatusBadge = (status: Session["status"]) => {
-    const variants = {
-      scheduled: { variant: "secondary" as const, label: "Gepland", icon: "📅" },
-      in_progress: { variant: "default" as const, label: "Bezig", icon: "▶️" },
-      completed: { variant: "outline" as const, label: "Afgerond", icon: "✅" },
-      cancelled: { variant: "destructive" as const, label: "Geannuleerd", icon: "❌" },
-    };
-    const config = variants[status];
+  if (sessions.length === 0) {
     return (
-      <Badge variant={config.variant}>
-        {config.icon} {config.label}
-      </Badge>
+      <div className="min-h-screen bg-background pb-20 flex items-center justify-center">
+        <div className="text-center px-6">
+          <div className="text-8xl mb-6 animate-bounce-in">📅</div>
+          <h2 className="text-2xl font-bold mb-3">Je eerste sessie wacht!</h2>
+          <Button size="lg" onClick={() => navigate("/help-request")} className="rounded-full">Plan een sessie</Button>
+        </div>
+        <BottomNav />
+      </div>
     );
-  };
-
-  const upcomingSessions = sessions.filter(
-    (s) => s.status === "scheduled" && new Date(s.scheduledStart) > new Date()
-  );
-  const completedSessions = sessions.filter((s) => s.status === "completed");
+  }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <Navigation />
-      <div className="bg-card border-b px-6 py-4">
-        <h1 className="text-xl font-bold">Mijn Sessies</h1>
-      </div>
-
-      <div className="px-6 py-6 space-y-6 max-w-3xl mx-auto">
-        {/* Upcoming Sessions */}
-        <div>
-          <h2 className="text-lg font-bold mb-4">Aankomend</h2>
-          {upcomingSessions.length === 0 ? (
-            <Card className="p-8 text-center">
-              <div className="text-4xl mb-3">📅</div>
-              <p className="text-muted-foreground mb-4">
-                Nog geen geplande sessies
-              </p>
-              <Button onClick={() => navigate("/help-request")}>
-                <Plus className="h-4 w-4 mr-2" />
-                Vraag hulp
-              </Button>
+    <div className="min-h-screen bg-background pb-20">
+      <div className="sticky top-0 bg-background/80 backdrop-blur-xl border-b border-border/50 z-40 p-4"><h1 className="text-2xl font-bold">Mijn Sessies</h1></div>
+      <div className="px-4 py-6 space-y-6">
+        {sessions.map((session) => (
+          <div key={session.id} className="flex gap-4">
+            <Card className="w-20 h-20 flex flex-col items-center justify-center border-0 bg-gradient-to-br from-headspace-peach to-headspace-pink shrink-0">
+              <div className="text-2xl font-bold">{format(new Date(session.scheduledStart), "d", { locale: nl })}</div>
+              <div className="text-xs text-foreground/70 uppercase">{format(new Date(session.scheduledStart), "MMM", { locale: nl })}</div>
             </Card>
-          ) : (
-            <div className="space-y-3">
-              {upcomingSessions.map((session) => (
-                <Card
-                  key={session.id}
-                  className="p-4 cursor-pointer hover:border-primary transition-all"
-                  onClick={() => navigate(`/session/${session.id}`)}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="font-semibold">
-                        {session.sessionType === "buddy"
-                          ? "Buddy Sessie"
-                          : "Groepssessie"}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {session.participants.length} deelnemers
-                      </p>
-                    </div>
-                    {getStatusBadge(session.status)}
-                  </div>
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      {session.scheduledStart.toLocaleDateString("nl-NL", {
-                        day: "numeric",
-                        month: "short",
-                      })}
-                    </div>
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      {session.scheduledStart.toLocaleTimeString("nl-NL", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Completed Sessions */}
-        {completedSessions.length > 0 && (
-          <div>
-            <h2 className="text-lg font-bold mb-4">Afgerond</h2>
-            <div className="space-y-3">
-              {completedSessions.map((session) => (
-                <Card
-                  key={session.id}
-                  className="p-4 cursor-pointer hover:border-primary/50 transition-all opacity-80"
-                  onClick={() => navigate(`/session/${session.id}`)}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="font-semibold">
-                        {session.sessionType === "buddy"
-                          ? "Buddy Sessie"
-                          : "Groepssessie"}
-                      </h3>
-                      {session.reflection && (
-                        <div className="flex items-center gap-1 mt-1">
-                          <span className="text-lg">{session.reflection.mood}</span>
-                          <span className="text-sm text-muted-foreground">
-                            Reflectie toegevoegd
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    {getStatusBadge(session.status)}
-                  </div>
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      {session.scheduledStart.toLocaleDateString("nl-NL", {
-                        day: "numeric",
-                        month: "short",
-                      })}
-                    </div>
-                    {session.actualStart && session.actualEnd && (
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        {Math.round(
-                          (session.actualEnd.getTime() -
-                            session.actualStart.getTime()) /
-                            60000
-                        )}{" "}
-                        min
-                      </div>
-                    )}
-                  </div>
-                </Card>
-              ))}
-            </div>
+            <Card className="flex-1 border-0 cursor-pointer" onClick={() => navigate(`/session/${session.id}`)}>
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-1">{session.sessionType === "buddy" ? "Buddy Sessie" : "Groepssessie"}</h3>
+                <Badge>{session.status}</Badge>
+                <div className="space-y-2 text-sm text-foreground/70 mt-3">
+                  <div className="flex items-center gap-2"><Clock className="w-4 h-4" /><span>{format(new Date(session.scheduledStart), "HH:mm", { locale: nl })}</span></div>
+                  <div className="flex items-center gap-2"><Users className="w-4 h-4" /><span>{session.participants.length} deelnemers</span></div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        )}
+        ))}
       </div>
+      <BottomNav />
     </div>
   );
 };
