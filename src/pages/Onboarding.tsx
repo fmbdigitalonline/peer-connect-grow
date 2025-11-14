@@ -44,6 +44,8 @@ const Onboarding = () => {
         navigate("/supportee/onboarding");
       } else if (selectedRole.id === "buddy") {
         navigate("/buddy/onboarding");
+      } else if (selectedRole.id === "peerLeader") {
+        navigate("/leader/onboarding");
       } else {
         navigate(`/environment/${selectedRole.id}`);
       }

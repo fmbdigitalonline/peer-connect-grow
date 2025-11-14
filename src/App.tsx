@@ -20,6 +20,9 @@ import SupporteeHub from "./pages/SupporteeHub";
 import BuddyJourney from "./pages/BuddyJourney";
 import BuddyOnboarding from "./pages/BuddyOnboarding";
 import BuddyHub from "./pages/BuddyHub";
+import LeaderJourney from "./pages/LeaderJourney";
+import LeaderOnboarding from "./pages/LeaderOnboarding";
+import LeaderHub from "./pages/LeaderHub";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +42,9 @@ const App = () => (
           <Route path="/buddy/onboarding" element={<BuddyOnboarding />} />
           <Route path="/buddy/journey" element={<BuddyJourney />} />
           <Route path="/buddy/hub" element={<BuddyHub />} />
+          <Route path="/leader/onboarding" element={<LeaderOnboarding />} />
+          <Route path="/leader/journey" element={<LeaderJourney />} />
+          <Route path="/leader/hub" element={<LeaderHub />} />
           <Route path="/help-request" element={<HelpRequest />} />
           <Route path="/matches" element={<Matches />} />
           <Route path="/sessions" element={<Sessions />} />
